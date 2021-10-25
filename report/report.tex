@@ -1,0 +1,70 @@
+\documentclass[]{./assets/tex/report-template}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\lstset{
+    mathescape=true,
+    basicstyle = \ttfamily
+}
+\usepackage[backend=biber,style=nature]{biblatex}
+\addbibresource{./assets/tex/bibliography.bib}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%% Cover Page
+
+\def\studentname{Rajit Banerjee}
+\def\studentid{18202817}
+\def\projecttitle{Performance Analysis of Design Patterns in Microservice Architecture}
+\def\supervisorname{Professor John Murphy}
+
+\begin{document}
+\maketitle
+
+%%%%%%%%
+\tableofcontents
+
+%%%%%%%%
+\abstract
+Provide a short description here (about 150-200 words) of your project. Do not go into fine detail, but offer a strategic overview of the project’s aims. An abstract should whet the appetite for what comes next, not quench it with details.
+
+
+%%%%%%%%
+\input{./chapters/specification.tex}
+
+%%%%%%%%
+\input{./chapters/introduction.tex}
+
+%%%%%%%%
+\input{./chapters/related-work.tex}
+
+%%%%%%%%
+\input{./chapters/data.tex}
+
+%%%%%%%%
+\input{./chapters/outline.tex}
+
+%%%%%%%%
+\input{./chapters/work-plan.tex}
+
+%%%%%%%%
+\input{./chapters/summary.tex}
+
+%%%%%%%%
+\input{./chapters/latexhelp.tex}
+
+%%%%%%%%
+\input{./chapters/acknowledgements.tex}
+
+
+%%%%%%%%
+\printbibliography
+
+%%%%%%%%
+\end{document}
