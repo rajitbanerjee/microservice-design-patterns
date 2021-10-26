@@ -21,7 +21,7 @@
 \renewcommand{\title}[1]{\textsf{\Huge{#1}}}
 \renewcommand{\author}[1]{\textsf{\Huge{#1}}}
 \newcommand{\subtitle}[1]{\textsf{\textbf{\Large{#1}}}}
-\newcommand{\abstractheading}[1]{\textsf{\textbf{\LARGE{#1}}}}
+\newcommand{\abstractheading}[1]{\textsf{\textbf{\Large{#1}}}}
 \newcommand{\code}[1]{\texttt{\footnotesize{#1}}}
 
 \renewcommand{\section}{\@startsection
@@ -30,7 +30,7 @@
 {0mm}%                            % the indent
 {10.6mm}%                         % the beforeskip
 {4.2mm}%                          % the afterskip
-{\LARGE\bfseries\sffamily}}       % the style
+{\Large\bfseries\sffamily}}       % the style
 
 \renewcommand{\subsection}{\@startsection
 {subsection}%                     % the name
