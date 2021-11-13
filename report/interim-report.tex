@@ -1,19 +1,36 @@
 \documentclass[]{./assets/tex/report-template}
+
+% graphics
 \usepackage{graphicx}
-\usepackage{listings}
-\usepackage{hyperref}
+
+% urls
+\usepackage{hyperref} 
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,      
     urlcolor=cyan,
 }
+
+% code blocks
+\usepackage{listings} 
 \lstset{
     mathescape=true,
     basicstyle = \ttfamily
 }
-\usepackage[backend=biber,style=nature]{biblatex}
+
+% Bibliography settings
+\usepackage[british]{babel}
+\usepackage[backend=biber,style=ieee,urldate=long]{biblatex}
 \addbibresource{./assets/tex/bibliography.bib}
+\usepackage{xpatch}
+\xpatchbibdriver{online} % Fix empty () with no publish date on online articles/blog posts/websites
+  {\printtext[parens]{\usebibmacro{date}}}
+  {\iffieldundef{year}
+    {}
+    {\printtext[parens]{\usebibmacro{date}}}}
+  {}
+  {\typeout{There was an error patching biblatex-ieee (specifically, ieee.bbx's @online driver)}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%
@@ -38,11 +55,11 @@
 %%%%%%%%
 \input{./chapters/specification.tex}
 
-%%%%%%%%%
-%\input{./chapters/introduction.tex}
+%%%%%%%%
+\input{./chapters/introduction.tex}
 
-%%%%%%%%%
-%\input{./chapters/related-work.tex}
+%%%%%%%%
+\input{./chapters/related-work.tex}
 
 %%%%%%%%%
 %\input{./chapters/data.tex}
@@ -50,8 +67,8 @@
 %%%%%%%%%
 %\input{./chapters/outline.tex}
 
-%%%%%%%%%
-%\input{./chapters/work-plan.tex}
+%%%%%%%%
+\input{./chapters/work-plan.tex}
 
 %%%%%%%%%
 %\input{./chapters/summary.tex}
