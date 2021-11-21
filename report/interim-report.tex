@@ -21,7 +21,7 @@
 
 % Bibliography settings
 \usepackage[british]{babel}
-\usepackage[backend=biber,style=ieee,urldate=long]{biblatex}
+\usepackage[backend=biber,style=ieee,urldate=long,dashed=false]{biblatex}
 \addbibresource{./assets/tex/bibliography.bib}
 \usepackage{xpatch}
 \xpatchbibdriver{online} % Fix empty () with no publish date on online articles/blog posts/websites
@@ -44,37 +44,37 @@
 \begin{document}
 \maketitle
 
-%%%%%%%%%
-%\tableofcontents
-
-%%%%%%%%%
-%\abstract
-%Provide a short description here (about 150-200 words) of your project. Do not go into fine detail, but offer a strategic overview of the project’s aims. An abstract should whet the appetite for what comes next, not quench it with details.
-
-
 %%%%%%%%
-\input{./chapters/specification.tex}
-
-%%%%%%%%
-\input{./chapters/introduction.tex}
-
-%%%%%%%%
-\input{./chapters/related-work.tex}
+\tableofcontents
 
 %%%%%%%%%
-%\input{./chapters/data.tex}
-
-%%%%%%%%%
-%\input{./chapters/outline.tex}
+%\input{./chapters/00-abstract.tex}
 
 %%%%%%%%
-\input{./chapters/work-plan.tex}
+\input{./chapters/01-specification.tex}
+
+%%%%%%%%%
+%\input{./chapters/02-introduction.tex}
+
+%%%%%%%%
+\input{./chapters/03-related-work.tex}
+
+%%%%%%%%%
+%\input{./chapters/04-outline.tex}
+
+%%%%%%%% TODO
+% \input{./chapters/05-work-plan.tex}
+
+%%%%%%%% Other possible chapter ideas (not necessarily all)
+% Options for core:
+% \input{./chapters/design-and-implementation.tex}
+% \input{./chapters/core-contribution.tex}
+% \input{./chapters/case-studies.tex}
+
+% \input{./chapters/evaluation.tex} <- required?
 
 %%%%%%%%%
 %\input{./chapters/summary.tex}
-
-%%%%%%%%%
-%\input{./chapters/latexhelp.tex}
 
 %%%%%%%%%
 %\input{./chapters/acknowledgements.tex}
