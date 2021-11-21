@@ -1,10 +1,26 @@
 \chapter{Related Work and Ideas}
 
+The aim of this chapter is to provide the readers with a holistic view of microservices and performance evaluation, especially some of the important terminology and latest developments in the field. The discussion will consider several published works which will illustrate the how the topic has been previously explored, and why performance engineering is useful at all, especially for distributed systems such as microservices.
+
 \section{Microservices and the transition from monoliths}
 
 \section{Software design patterns}
 
+In software engineering and related fields, \textbf{design patterns} are generally defined as reusable solutions to commonly occurring problems in software design. Although design patterns cannot be directly converted to code (like an algorithm described in pseudo-code), they provide a blueprint on how a problem can be approached in various situations. Unlike \textit{algorithms}, design patterns are not meant to define any clear set of instructions to reach a target, but instead provide a high level description of an approach. The characteristic features and final result are laid out, however the actual implementation of the pattern is left up to the requirements of the business problem and use case. Every "useful" design pattern should describe the following aspects: the intent and motivation, the proposed solution, the appropriate scenarios where the solution is applicable, known consequences and possible unknowns, as well as some examples and implementation suggestions.
+
+Over half a decade of software engineering experience has taught developers that it is indeed rare to come across a hurdle that hasn't been crossed before in some shape or form. Most obstacles and day-to-day decisions would have been tackled previously by another developer, thanks to which the idea of \textit{best practices} has been formed over the years. Such solutions are accepted as superior, as they save time, are adequately efficient, and don't have many unknown side effects.
+
+The most widely known literature on the topic is the 1994 textbook \cite{gof94} by the Gamma, Helm, Johnson and Vlissides (Gang of Four), which is considered as the milestone work that initiated the concept of software design patterns. The authors, inspired by Christopher Alexander's definition of patterns in urban design \cite{alexander77}, describe 23 classic patterns that fall under 3 main categories: \textit{creational, structural}, and \textit{behavioral} patterns.
+
+
+In recent times, design patterns have had a tendency of coming across as somewhat controversial, primarily due to a lack of understanding about their purpose. In this regard, it is important for developers to note that in the end, design patterns are merely guidelines and not hard-and-fast rules that must not be broken. The one-size-fits-all model does not apply to a field as vast as software design, and design patterns should be treated as what they are: incredibly useful \textit{tools} that
+when applied in an appropriate manner can speed up the development process manyfold.
+
 \section{Performance evaluation of distributed systems}
+
+- https://en.wikipedia.org/wiki/Performance\_engineering
+- Describe performance engineering in few paragraphs - definitions, goals, etc.
+- Mention Chaos Engineering/Chaos Monkey at Netflix
 
 \section{Issues and challenges with microservices}
 

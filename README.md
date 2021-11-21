@@ -13,4 +13,5 @@
 
 - [Report](./report/)
     - [Project Specification](./report/fyp-specification.pdf)
+    - [Interim Report](./report/interim-report.pdf)
 
