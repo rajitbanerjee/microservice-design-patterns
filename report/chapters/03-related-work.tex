@@ -4,28 +4,78 @@ The aim of this chapter is to provide the readers with a holistic view of micros
 
 \section{Microservices and the transition from monoliths}
 
+Probably the most well known defition of 
+
 \section{Software design patterns}
 
-In software engineering and related fields, \textbf{design patterns} are generally defined as reusable solutions to commonly occurring problems in software design. Although design patterns cannot be directly converted to code (like an algorithm described in pseudo-code), they provide a blueprint on how a problem can be approached in various situations. Unlike \textit{algorithms}, design patterns are not meant to define any clear set of instructions to reach a target, but instead provide a high level description of an approach. The characteristic features and final result are laid out, however the actual implementation of the pattern is left up to the requirements of the business problem and use case. Every "useful" design pattern should describe the following aspects: the intent and motivation, the proposed solution, the appropriate scenarios where the solution is applicable, known consequences and possible unknowns, as well as some examples and implementation suggestions.
+In software engineering and related fields, \textit{design patterns} are generally defined as reusable solutions to commonly occurring problems in software design. Although design patterns cannot be directly converted to code (like an algorithm described in pseudo-code), they provide a blueprint on how a problem can be approached in various situations. Unlike \textit{algorithms}, design patterns are not meant to define any clear set of instructions to reach a target, but instead provide a high level description of an approach. The characteristic features and final result are laid out, however the actual implementation of the pattern is left up to the requirements of the business problem and use case. Every "useful" design pattern should describe the following aspects: the intent and motivation, the proposed solution, the appropriate scenarios where the solution is applicable, known consequences and possible unknowns, as well as some examples and implementation suggestions.
 
 Over half a decade of software engineering experience has taught developers that it is indeed rare to come across a hurdle that hasn't been crossed before in some shape or form. Most obstacles and day-to-day decisions would have been tackled previously by another developer, thanks to which the idea of \textit{best practices} has been formed over the years. Such solutions are accepted as superior, as they save time, are adequately efficient, and don't have many unknown side effects.
 
-The most widely known literature on the topic is the 1994 textbook \cite{gof94} by the Gamma, Helm, Johnson and Vlissides (Gang of Four), which is considered as the milestone work that initiated the concept of software design patterns. The authors, inspired by Christopher Alexander's definition of patterns in urban design \cite{alexander77}, describe 23 classic patterns that fall under 3 main categories: \textit{creational, structural}, and \textit{behavioral} patterns.
+The most widely known literature on the topic is the 1994 textbook \cite{gof94} by the Gamma, Helm, Johnson and Vlissides (Gang of Four), which is considered as the milestone work that initiated the concept of software design patterns. The authors, inspired by Christopher Alexander's definition of patterns in urban design \cite{alexander77}, describe 23 classic patterns that fall under 3 main categories: \textit{creational, structural}, and \textit{behavioral} patterns. 
 
+\begin{itemize}
+  \item Creational patterns such as \textit{Factory Method, Builder} and \textit{Singleton} increase the flexibility and reusability of code by providing object creation mechanisms.
+  \item Structural patterns such as \textit{Adapter, Bridge} and \textit{Facade} illustrate the process of building large, flexible and efficient code structures.
+  \item Behavioral patterns such as \textit{Chain of Responsibility, Iterator}, and \textit{Observer} provide guidelines to distribute responsibilities between objects, and are specific to algorithms. 
+\end{itemize}
 
-In recent times, design patterns have had a tendency of coming across as somewhat controversial, primarily due to a lack of understanding about their purpose. In this regard, it is important for developers to note that in the end, design patterns are merely guidelines and not hard-and-fast rules that must not be broken. The one-size-fits-all model does not apply to a field as vast as software design, and design patterns should be treated as what they are: incredibly useful \textit{tools} that
-when applied in an appropriate manner can speed up the development process manyfold.
+In recent times, design patterns have had a tendency of coming across as somewhat controversial, primarily due to a lack of understanding about their purpose. In this regard, it is important for developers to note that in the end, design patterns are merely guidelines and not hard-and-fast rules that must not be broken. 
 
-\section{Performance evaluation of distributed systems}
+\section{Common design patterns in microservice architecture}
+
+Several attempts have been made to  apply the concepts of software design patterns to microservices and categorise commonly seen patterns. In Fig. \ref{fig:richardson-patterns}, C. Richardson provides a number of pattern groups, including \textit{Decomposition, Data management, Transactional messaging, Testing, Deployment, Cross-cutting concerns, Communication style, External API, Service discovery, Reliability, Security, Observability} and \textit{UI} \cite{richardson-patterns}.
+
+\begin{figure}[h]
+    \centering
+  \includegraphics[width=1.0\linewidth]{./assets/images/related-work/richardson-patterns.pdf}
+  \caption{Groups of microservice design patterns \cite{richardson-patterns}.}
+  \label{fig:richardson-patterns}
+\end{figure}
+
+Similarly, M. Udantha describes 5 different classes of design patterns applicable to microservices, namely \textit{Decomposition, Integration, Database, Observability} and \textit{Cross-cutting concerns} (see Fig. \ref{fig:udantha-patterns}). 
+
+\begin{figure}[h]
+    \centering
+  \includegraphics[width=0.6\linewidth]{./assets/images/related-work/udantha-patterns}
+  \caption{Udantha's 5 classes of microservice design patterns \cite{udantha19}.}
+  \label{fig:udantha-patterns}
+\end{figure}
+
+It is important to note that despite minor differences in the categorisation of patterns, the groups suggested by the authors above are generally along the same lines, and aim to address the common principles of microservice design, such as scalability, availablity, resiliency, flexibility, independence/autonomy, decentralised governance, failure isolation, auto-provisioning and CI/CD (continuous integration and delivery) \cite{udantha19}.
+
+\begin{itemize}
+  \item \textit{Decomposition} patterns lie at the heart of microservice design, and illustrate how an application can be broken down by business capability, subdomain, transactions, developer teams, etc. They also include refactoring patterns that guide the transition from monoliths to microservices.
+
+  \item \textit{Data management} patterns guide the design of database architecture (e.g. whether multiple services will share a database or each service will get a private database). They also lay out methods for maintaining data consistency, dealing with data updates and implementing queries.
+
+  \item \textit{Integration} patterns include API gateways, chain of responsibility, other communication mechanisms (e.g. asynchronous messaging, domain-specific protocols), as well as user 
+  \item \textit{Cross-cutting concern} patterns describe ways of dealing with concerns that cannot be made completely independent, and result in a certain level of tangling (dependencies) and scattering (code duplication). Examples include externalising configuration, handling service discovery (client-side such as Netflix Eureka \footnote{\url{https://github.com/Netflix/eureka}}; server-side like AWS ELB \footnote{\url{https://aws.amazon.com/elasticloadbalancing/}}), using circuit breakers, or practising Blue-Green deployment (keeping only one of two identical production environment live at any time). Service discovery and circuit breaker (for reliability) are also considered as communication patterns.
+
+  \item \textit{Deployment} patterns illustrate multiple ways of deploying microservices, including considerations about hosts, virtual machines, containerisation, number of service instances, as well as serverless options.  
+
+  \item \textit{Observability} is a part of performance engineering, and such patterns are essential to any form of software design, since application behaviour must be continously monitored and tested to ensure smooth working. Aggregating logs, keeping track of performance metrics, using distributed tracing, and maintaining a health check API are some invaluable practices which aid the troubleshooting process.
+\end{itemize}
+
+It is interesting to note that there are certain similarities between the \textit{GoF}'s creational, structural and behavioral patterns \cite{gof94} and the aforementioned microservice-specific patterns. \linebreak
+
+Apart from the sources mentioned above, there have been some studies conducted to recognise architectural patterns for microservice-based systems. In \cite{bogner18}, Bogner et al. perform a qualitative analysis of SOA (Service-oriented Architecture) patterns in the context of microservices. Out of 118 SOA patterns (sources: \cite{erl09}, \cite{erl12}, \cite{rotem12}), the authors found that 63\% were fully applicable, 25\% were partially applicable and 12\% were not all applicable to
+microservices. Taibi et al. \cite{taibi18} tackle the issue of inadequate understanding regarding the adoption of microservice architectures. The authors explore a number of widely adopted design patterns, under the categories of \textit{Orchestration and Coordination, Deployment} and \textit{Data storage}, by elaborating the advantages, disadvantages and lessons learnt from a number of case studies. Thus, a catalogue of patterns is presented, all constituents of which demonstrate the common structural properties of microservices as discussed earlier.
+
+\section{Issues and challenges with microservices}
+
+\section{Performance engineering}
+
+\subsection{Software performance engineering (SPE)}
+
+\subsection{Distributed systems}
 
 - https://en.wikipedia.org/wiki/Performance\_engineering
 - Describe performance engineering in few paragraphs - definitions, goals, etc.
 - Mention Chaos Engineering/Chaos Monkey at Netflix
 
-\section{Issues and challenges with microservices}
-
-\section{Common design patterns in microservice architecture}
-
-\section{Performance evaluation of microservice design patterns}
+\subsection{Performance evaluation of microservice design patterns}
 
 \section{Summary}
+
+- Mention limitations of the related works
