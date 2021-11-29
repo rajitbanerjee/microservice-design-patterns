@@ -1,6 +1,6 @@
 \chapter{Related Work and Ideas}
 
-The aim of this chapter is to provide the readers with a holistic view of microservices and performance evaluation, especially some of the important terminology and latest developments in the field. The discussion will consider several published works which will illustrate the how the topic has been previously explored, and why performance engineering is useful at all, especially for distributed systems such as microservices.
+The aim of this chapter is to provide the readers with a holistic view of microservices, design patterns and performance evaluation, especially highlighting some of the important terminology and latest developments in the field. The discussion will consider the existing literature which illustrate how the topics have been previously explored, including the significance of performance engineering for microservices.
 
 \section{Microservices}
 
@@ -83,30 +83,27 @@ M. Fowler argues in \cite{fowler14} that transitioning from a well-defined monol
 Finally, it is important to avoid common anti-patterns that are known to be counterproductive when adopting the microservice architectural style. A few examples of such practices include \cite{alagarasan15}, \cite{kanjilal21}:
 
 \begin{itemize}
-  \item Distributed monolith - a monolith refactored into several smaller services, all of which are interdependent (tightly coupled).
-  \item Dependency disorder - services must be deployed in a particular order to work.
-  \item Shared database - resource contention due to all microservices sharing a single data store.
-  \item API gateway - not using an API gateway, or using it incorrectly by building a gateway in every service.
-  \item Entangled data - all services get complete access to all database objects (not following the principle of least privilege).
-  \item Improper versioning - services such as APIs not designed for changes and upgrades, leading to reduced maintainability.
+	\item Distributed monolith - a monolith refactored into several smaller services, all of which are interdependent (tightly coupled).
+	\item Dependency disorder - services must be deployed in a particular order to work.
+	\item Shared database - resource contention due to all microservices sharing a single data store.
+	\item API gateway - not using an API gateway, or using it incorrectly by building a gateway in every service.
+	\item Entangled data - all services get complete access to all database objects (not following the principle of least privilege).
+	\item Improper versioning - services such as APIs not designed for changes and upgrades, leading to reduced maintainability.
 \end{itemize}
 
 \section{Performance engineering}
 
-Having discussed the background research and ideas related to microservices and design patterns, we
-2+ pages including pictures (possibly from akbulut19).
-
-Discuss Software performance engineering (SPE) at the top, no special subsection.
+Having discussed the background research and ideas related to microservice-based systems and design patterns, it is now appropriate to narrow down the focus to performance engineering, especially in the context of microservices and their design patterns. Software performance engineering (SPE) is a vital part of the software design lifecycle, including, but not limited to performance simulation and modelling (e.g. using UML \footnote{\url{https://www.uml.org}} diagrams), benchmarking, monitoring, and performance testing.
 
 \subsection{Distributed systems}
 
-- https://en.wikipedia.org/wiki/Performance\_engineering
-- Describe performance engineering in few paragraphs - definitions, goals, etc.
-- Mention Chaos Engineering/Chaos Monkey at Netflix
+Innovation in performance engineering has often been driven by breakthroughs in industry, out of necessity. In fact, Netflix is well known for pioneering the concept of \textit{chaos engineering} as early as 2011, when migrating to the cloud (AWS). To address the inadequacy of available resilience testing, the company invented a suite of tools (known as the "Simian Army" \cite{netflix-chaos}), the most significant of which is Chaos Monkey \footnote{\url{https://netflix.github.io/chaosmonkey/}}.
+Chaos engineering tests the performance of a large-scale system when subjected to experimental failure scenarios, especially in production environments. Similarly, there is the principle of ownership at Amazon, where it is the development team's responsibility to handle the entire software lifecycle including operations, performance testing, and monitoring ("you build it, you run it" \cite{ohanlon06}).
+
+Much work has been done over the years on studying performance engineering techniques for distributed systems in general.
 
 \subsection{Evaluation of microservice-based systems}
 
-- Mention the 6 performance papers downloaded. Perhaps 1 para for each.
 
 \section{Summary}
 
