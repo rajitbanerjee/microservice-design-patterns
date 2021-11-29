@@ -2,9 +2,18 @@
 
 The aim of this chapter is to provide the readers with a holistic view of microservices and performance evaluation, especially some of the important terminology and latest developments in the field. The discussion will consider several published works which will illustrate the how the topic has been previously explored, and why performance engineering is useful at all, especially for distributed systems such as microservices.
 
-\section{Microservices and the transition from monoliths}
+\section{Microservices}
 
-Probably the most well known defition of 
+Divide and conquer, the idea of breaking down complex systems into smaller manageable parts, is an ancient and proven paradigm which has been applied to computer science since the early 1960s. To tackle the complexities of software systems, concepts such as \textit{modularity} and \textit{information hiding} were introduced in 1972 by D. Parnas \cite{parnas72}, as well as \textit{separation of concerns} by E.W. Dijkstra in 1974 \cite{dijkstra74}.
+
+Regarding the term "microservices", the two most acknowledged defitions were given by Lewis and Fowler \cite{lewis14} and Newman \cite{newman14}, both around the same time in 2014. Newman considers microservices as a particular way of implementing SOA (Service-oriented Architecture) well, whereas Lewis and Fowler define it as a new architectural style contrasted against SOA:
+
+\textit{"In short, the microservice architectural style is an approach to developing a single application as a suite of small services, each running in its own process and communicating with lightweight mechanisms, often an HTTP resource API."}
+
+The aforementioned definitions are first compared in 2016 by Zimmermann \cite{zimmermann16}, who constrasted them with existing SOA principles and patterns. Since then, a number of systematic mapping studies have been published (\cite{pahl16}, \cite{alshuqayran16}, \cite{difrancesco19}) to identify existing literatures on microservices, in an effort to bridge the gap between academia (lack of many significant publications) and industry (racing past academia in terms of popularising and adopting
+microservices). In particular, Di Francesco et al. \cite{difrancesco19} cite both the prior studies conducted by Pahl and Jamshidi \cite{pahl16} and Alshuqayran et al. \cite{alshuqayran16}, and mention that due to the \textit{bottom-up} approach (practical solutions first) that the industry has taken with microservices, many "fundamental principles and claimed benefits have still to be proven". By learning from practical applications, the industry has identified best practices, however aspects such as performance, functional suitability and maintainability of microservices at the industry-scale (instead of small-scale examples) are yet to proven in academia.
+
+In the past decade or so, the adoption of microservices has been accelerated by the success of companies such as Amazon Web Services (AWS) \footnote{\url{https://aws.amazon.com}}, Netflix \footnote{\url{https://www.netflix.com}}, Spotify \footnote{\url{https://www.spotify.com}} and Uber \footnote{\url{https://www.uber.com/}}. Amazon also has a whitepaper describing how microservices can be implemented using AWS cloud services, taking into consideration ways to reduce operational complexity and design distributed systems components (service discovery, data management, configuration management, asynchronous communication, and monitoring) \cite{aws-microservices}.
 
 \section{Software design patterns}
 
@@ -66,7 +75,7 @@ microservices. Taibi et al. \cite{taibi18} tackle the issue of inadequate unders
 
 \section{Performance engineering}
 
-\subsection{Software performance engineering (SPE)}
+Discuss Software performance engineering (SPE) at the top, no special subsection.
 
 \subsection{Distributed systems}
 
@@ -74,7 +83,7 @@ microservices. Taibi et al. \cite{taibi18} tackle the issue of inadequate unders
 - Describe performance engineering in few paragraphs - definitions, goals, etc.
 - Mention Chaos Engineering/Chaos Monkey at Netflix
 
-\subsection{Performance evaluation of microservice design patterns}
+\section{Evaluation of microservice-based systems}
 
 \section{Summary}
 
