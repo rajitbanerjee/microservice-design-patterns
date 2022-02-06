@@ -1,0 +1,19 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>comp30910</groupId>
+    <artifactId>case-study-01</artifactId>
+    <version>0.0.1</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>core</module>
+        <module>eureka-server</module>
+
+        <module>api-gateway</module>
+        <module>movies-service</module>
+        <module>reservations-service</module>
+        <module>sessions-service</module>
+
+        <module>cli-client</module>
+    </modules>
+</project>
