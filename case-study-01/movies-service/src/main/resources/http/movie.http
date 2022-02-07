@@ -1,0 +1,7 @@
+POST http://localhost:8081/movie
+Content-Type: application/json
+
+{
+  "name": "Belfast",
+  "cinemaName": "ODEON Stillorgan"
+}

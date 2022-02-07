@@ -9,11 +9,10 @@
         <module>core</module>
         <module>eureka-server</module>
 
-        <module>api-gateway</module>
+        <!-- <module>api-gateway</module> -->
         <module>movies-service</module>
-        <module>reservations-service</module>
-        <module>sessions-service</module>
+        <!-- <module>reservations-service</module> -->
 
-        <module>cli-client</module>
+        <!-- <module>cli-client</module> -->
     </modules>
 </project>

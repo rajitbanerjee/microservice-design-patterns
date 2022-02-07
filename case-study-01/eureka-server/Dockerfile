@@ -1,3 +1,3 @@
 FROM openjdk:11-jre-slim
-COPY target/eureka-server*.jar /eurek-server.jar
-CMD ["java", "-jar", "/eureka-server.jar"]
+COPY target/eureka*.jar /eureka.jar
+CMD java -jar /eureka.jar
