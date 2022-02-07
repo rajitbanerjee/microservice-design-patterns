@@ -11,7 +11,7 @@
 
         <module>api-gateway-service</module>
         <module>movies-service</module>
-        <!-- <module>reservations-service</module> -->
+        <module>reservations-service</module>
 
         <!-- <module>cli-client</module> -->
     </modules>

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MovieRequest {
-    private String name;
+    private String movieName;
     private String cinemaName;
 }

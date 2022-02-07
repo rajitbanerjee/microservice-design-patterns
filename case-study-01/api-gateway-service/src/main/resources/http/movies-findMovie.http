@@ -2,6 +2,6 @@ POST http://localhost:8080/movies/findMovie
 Content-Type: application/json
 
 {
-  "name": "Belfast",
+  "movieName": "Belfast",
   "cinemaName": "ODEON Stillorgan"
 }

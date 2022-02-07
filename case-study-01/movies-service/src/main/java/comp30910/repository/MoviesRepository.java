@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MoviesRepository extends MongoRepository<MoviesDocument, String> {
 
-    @Query("{'name': '?0', 'showTimes.cinemaName': '?1'}")
-    MoviesDocument findMovie(String name, String cinemaName);
+    @Query("{'movieName': '?0', 'showTimes.cinemaName': '?1'}")
+    MoviesDocument findMovie(String movieName, String cinemaName);
 }

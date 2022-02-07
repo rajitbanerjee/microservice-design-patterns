@@ -19,8 +19,8 @@ public class MoviesService {
     private final MoviesRepository moviesRepository;
     private static final String DATA_FILE = "data/movies.json";
 
-    public MoviesDocument findMovie(String name, String cinemaName) {
-        return moviesRepository.findMovie(name, cinemaName);
+    public MoviesDocument findMovie(String movieName, String cinemaName) {
+        return moviesRepository.findMovie(movieName, cinemaName);
     }
 
     public Map<String, ?> delay(int seconds) throws InterruptedException {

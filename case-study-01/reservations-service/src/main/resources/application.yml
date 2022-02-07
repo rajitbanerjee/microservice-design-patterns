@@ -1,0 +1,17 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  application:
+    name: reservations-service
+  data:
+    mongodb:
+      database: reservations
+      host: ${DATABASE_HOST}:${DATABASE_PORT}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_SERVER}:${EUREKA_PORT:8761}/eureka/

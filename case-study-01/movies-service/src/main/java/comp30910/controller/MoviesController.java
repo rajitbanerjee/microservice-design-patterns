@@ -24,7 +24,8 @@ public class MoviesController {
     @ResponseBody
     @PostMapping("/findMovie")
     public MoviesDocument findMovie(@RequestBody MovieRequest request) {
-        MoviesDocument result = moviesService.findMovie(request.getName(), request.getCinemaName());
+        MoviesDocument result =
+                moviesService.findMovie(request.getMovieName(), request.getCinemaName());
         if (result == null) throw new MovieNotFoundException();
         return result;
     }

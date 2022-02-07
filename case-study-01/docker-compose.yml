@@ -15,7 +15,7 @@ services:
   api-gateway-service:
     build: api-gateway-service
     container_name: api-gateway-service
-    ports: 
+    ports:
       - "8080:8080"
     environment:
       - SERVER_PORT=8080
@@ -28,6 +28,18 @@ services:
     container_name: movies-service
     environment:
       - SERVER_PORT=8081
+      - EUREKA_SERVER=eureka-server
+      - DATABASE_HOST=mongodb
+      - DATABASE_PORT=27017
+    depends_on:
+      - mongodb
+      - eureka-server
+
+  reservations-service:
+    build: reservations-service
+    container_name: reservations-service
+    environment:
+      - SERVER_PORT=8082
       - EUREKA_SERVER=eureka-server
       - DATABASE_HOST=mongodb
       - DATABASE_PORT=27017

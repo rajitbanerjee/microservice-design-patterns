@@ -15,6 +15,6 @@ public class FallbackController {
 
     @GetMapping("/reservations")
     public String reservations() {
-        return "Fallback: Circuit broker in reservations-service!";
+        return "Fallback: Circuit broken in reservations-service!";
     }
 }

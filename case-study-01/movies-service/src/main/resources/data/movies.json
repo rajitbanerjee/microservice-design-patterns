@@ -1,7 +1,7 @@
 [
   {
     "id": "movie001",
-    "name": "Belfast",
+    "movieName": "Belfast",
     "showTimes": [
       {
         "cinemaName": "ODEON Stillorgan",
@@ -25,7 +25,7 @@
   },
   {
     "id": "movie002",
-    "name": "Spider-Man: No Way Home",
+    "movieName": "Spider-Man: No Way Home",
     "showTimes": [
       {
         "cinemaName": "UCD Cinema",

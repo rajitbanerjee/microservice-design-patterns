@@ -1,0 +1,14 @@
+POST http://localhost:8080/reservations/makeReservation
+Content-Type: application/json
+
+{
+  "movieName": "Belfast",
+  "cinemaName": "ODEON Stillorgan",
+  "date": "2022-02-07",
+  "time": "18:45",
+  "numTickets": 1,
+  "ticketCategory": "Gold",
+  "totalFarePaid": 12.00,
+  "clientName": "John Doe",
+  "clientEmail": "john.doe@xyz.com"
+}
