@@ -1,0 +1,24 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+  application:
+    name: api-gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: moviesServiceModule
+          uri: lb://MOVIES-SERVICE
+          predicates:
+            - Path=/movies/**
+        - id: reservationsServiceModule
+          uri: lb://RESERVATIONS-SERVICE
+          predicates:
+            - Path=/reservations/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_SERVER}:${EUREKA_PORT:8761}/eureka/

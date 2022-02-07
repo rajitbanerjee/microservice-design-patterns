@@ -9,7 +9,7 @@
         <module>core</module>
         <module>eureka-server</module>
 
-        <!-- <module>api-gateway</module> -->
+        <module>api-gateway-service</module>
         <module>movies-service</module>
         <!-- <module>reservations-service</module> -->
 
