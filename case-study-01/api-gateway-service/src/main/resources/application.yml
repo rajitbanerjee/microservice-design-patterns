@@ -11,10 +11,20 @@ spring:
           uri: lb://MOVIES-SERVICE
           predicates:
             - Path=/movies/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: moviesCB
+                fallbackUri: forward:/fallback/movies
         - id: reservationsServiceModule
           uri: lb://RESERVATIONS-SERVICE
           predicates:
             - Path=/reservations/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: reservationsCB
+                fallbackUri: forward:/fallback/reservations
 
 eureka:
   client:

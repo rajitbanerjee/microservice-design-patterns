@@ -7,7 +7,9 @@ import comp30910.repository.MoviesRepository;
 import comp30910.utils.FileIO;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,11 @@ public class MoviesService {
 
     public MoviesDocument findMovie(String name, String cinemaName) {
         return moviesRepository.findMovie(name, cinemaName);
+    }
+
+    public Map<String, ?> delay(int seconds) throws InterruptedException {
+        Thread.sleep(seconds * 1000);
+        return new HashMap<>();
     }
 
     public void initDatabase() {

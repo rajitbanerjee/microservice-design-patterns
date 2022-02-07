@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/fallback")
 public class FallbackController {
 
-    @GetMapping("/message")
-    public String message() {
-        return "Fallback!";
+    @GetMapping("/movies")
+    public String movies() {
+        return "Fallaback: Circuit broken in movies-service!";
+    }
+
+    @GetMapping("/reservations")
+    public String reservations() {
+        return "Fallback: Circuit broker in reservations-service!";
     }
 }
