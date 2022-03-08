@@ -10,7 +10,7 @@ public class FallbackController {
 
     @GetMapping("/movies")
     public String movies() {
-        return "Fallaback: Circuit broken in movies-service!";
+        return "Fallback: Circuit broken in movies-service!";
     }
 
     @GetMapping("/reservations")

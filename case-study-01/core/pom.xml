@@ -24,12 +24,6 @@
       <version>1.18.22</version>
       <scope>provided</scope>
     </dependency>
-    <!-- jsoniter (JSON parser) -->
-    <dependency>
-      <groupId>com.jsoniter</groupId>
-      <artifactId>jsoniter</artifactId>
-      <version>0.9.19</version>
-    </dependency>
     <!-- Google Guava -->
     <dependency>
       <groupId>com.google.guava</groupId>

@@ -20,15 +20,13 @@ public class Application {
 
     @Bean
     public Customizer<Resilience4JCircuitBreakerFactory> defaultCustomizer() {
-        return factory ->
-                factory.configureDefault(
-                        id ->
-                                new Resilience4JConfigBuilder(id)
-                                        .timeLimiterConfig(
-                                                TimeLimiterConfig.custom()
-                                                        .timeoutDuration(Duration.ofSeconds(3))
-                                                        .build())
-                                        .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
-                                        .build());
+        return factory -> factory.configureDefault(id -> builder(id).build());
+    }
+
+    private Resilience4JConfigBuilder builder(String id) {
+        return new Resilience4JConfigBuilder(id)
+                .timeLimiterConfig(
+                        TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(3)).build())
+                .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults());
     }
 }

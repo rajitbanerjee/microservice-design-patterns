@@ -8,7 +8,7 @@
     <relativePath/>
     <!-- lookup parent from repository -->
   </parent>
-  <groupId>comp30190</groupId>
+  <groupId>comp30910</groupId>
   <artifactId>eureka-server</artifactId>
   <version>0.0.1</version>
   <name>eureka-server</name>
