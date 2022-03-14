@@ -15,6 +15,7 @@
   <name>cli-client</name>
   <properties>
     <java.version>11</java.version>
+    <main.class>Client</main.class>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
