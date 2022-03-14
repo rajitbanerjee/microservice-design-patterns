@@ -32,7 +32,7 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
-  </dependency>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>

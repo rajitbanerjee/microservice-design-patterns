@@ -4,27 +4,27 @@ server:
 spring:
   application:
     name: api-gateway-service
-  cloud:
-    gateway:
-      routes:
-        - id: moviesServiceModule
-          uri: lb://MOVIES-SERVICE
-          predicates:
-            - Path=/movies/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: moviesCB
-                fallbackUri: forward:/fallback/movies
-        - id: reservationsServiceModule
-          uri: lb://RESERVATIONS-SERVICE
-          predicates:
-            - Path=/reservations/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: reservationsCB
-                fallbackUri: forward:/fallback/reservations
+  # cloud:
+  #   gateway:
+  #     routes:
+  #       - id: moviesServiceModule
+  #         uri: lb://MOVIES-SERVICE
+  #         predicates:
+  #           - Path=/movies/**
+  #         filters:
+  #           - name: CircuitBreaker
+  #             args:
+  #               name: moviesCB
+  #               fallbackUri: forward:/fallback/movies
+  #       - id: reservationsServiceModule
+  #         uri: lb://RESERVATIONS-SERVICE
+  #         predicates:
+  #           - Path=/reservations/**
+  #         filters:
+  #           - name: CircuitBreaker
+  #             args:
+  #               name: reservationsCB
+  #               fallbackUri: forward:/fallback/reservations
 
 eureka:
   client:
