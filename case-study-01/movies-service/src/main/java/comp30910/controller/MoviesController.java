@@ -33,7 +33,7 @@ public class MoviesController {
         return moviesService.delay(seconds);
     }
 
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     class MovieNotFoundException extends RuntimeException {
         static final long serialVersionUID = -6516152229878843037L;
     }

@@ -21,6 +21,7 @@ public class ReservationsController {
     private final ReservationsService reservationsService;
 
     @PostMapping("/makeReservation")
+    @ResponseStatus(HttpStatus.CREATED)
     public String makeReservation(@RequestBody ReservationsDocument request) {
         try {
             reservationsService.makeReservation(request);
@@ -40,7 +41,7 @@ public class ReservationsController {
         return reservationsService.delay(seconds);
     }
 
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     class CouldNotMakeReservationException extends RuntimeException {
         static final long serialVersionUID = -6516152245823843037L;
     }
