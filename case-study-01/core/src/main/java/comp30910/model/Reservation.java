@@ -9,13 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation {
-    private String movieName;
-    private String cinemaName;
-    private Date date;
-    private String time;
-    private Integer numTickets;
-    private String ticketCategory;
-    private Double totalFarePaid;
-    private String clientName;
-    private String clientEmail;
+    private int id;
+    private int userId;
+    private int movieId;
+    private int cinemaId;
+    private Date datetime;
+    private int tickets;
+    private String ticketType;
+    private double amount;
 }
