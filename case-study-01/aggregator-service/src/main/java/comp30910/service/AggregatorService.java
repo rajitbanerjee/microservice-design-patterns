@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,7 +17,9 @@ import org.springframework.web.client.RestTemplate;
 public class AggregatorService {
     private final DiscoveryService discoveryService;
     private final RestTemplate restTemplate;
-    private static final String GATEWAY_HOST = "lb://API-GATEWAY-SERVICE";
+
+    @Value("${api_gateway_host}")
+    private String apiGatewayHost;
 
     public List<Movie> movieList(HttpMethod httpMethod, String endpoint) {
         TypeLiteral<List<Movie>> type = new TypeLiteral<>() {};
@@ -28,7 +31,7 @@ public class AggregatorService {
             String endpoint, HttpMethod httpMethod, TypeLiteral<T> type, Object request) {
         List<T> results = new ArrayList<>();
         for (String serviceUrl : discoveryService.getCinemaUrlPrefixes()) {
-            String url = GATEWAY_HOST + serviceUrl + endpoint;
+            String url = apiGatewayHost + serviceUrl + endpoint;
             String response = "";
             if (httpMethod.matches("GET")) {
                 response = restTemplate.getForObject(url, String.class);

@@ -29,6 +29,7 @@ services:
     environment:
       - SERVER_PORT=8081
       - EUREKA_SERVER=eureka-server
+      - API_GATEWAY_HOST=lb://API-GATEWAY-SERVICE
     depends_on:
       - eureka-server
 
