@@ -18,24 +18,33 @@ import java.util.stream.IntStream;
 
 public class Client {
     private static final int NUM_THREADS = 500;
-    private static final int THREAD_INCR = 50;
+    private static final int THREAD_INCR = 25;
     private static final int REQUESTS_PER_THREAD = 3000;
     private static final String BASE_PATH = "results";
-    private static final String HEADING = "(Thread, Request), Duration (nanosec)";
+    private static final String COLUMNS = "Threads,ThreadID,RequestID,Duration (nanosec)";
     private static final String HOST = "http://localhost:8099";
-    private static int i;
+    private static int numThreads;
+    private static int threadId;
 
     public static void main(String[] args) throws IOException {
         String filePath =
                 String.format(
                         "%s/test-%s.csv", BASE_PATH, getCurrentTimestamp("yyyy-MM-dd-HH-mm-ss"));
-        FileIO.writeToFile(filePath, HEADING, false);
+        String heading =
+                String.format(
+                        "NUM_THREADS = %d, THREAD_INCR = %d, REQUESTS_PER_THREAD = %d\n",
+                        NUM_THREADS, THREAD_INCR, REQUESTS_PER_THREAD);
+        FileIO.writeToFile(filePath, heading, false);
+        FileIO.writeToFile(filePath, COLUMNS, true);
 
         // Set up new load sources (threads)
         ExecutorService executor =
                 Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        for (i = 1; i <= NUM_THREADS; i += THREAD_INCR) {
-            executor.execute(new LoadSource(i, REQUESTS_PER_THREAD, filePath));
+        for (numThreads = THREAD_INCR; numThreads <= NUM_THREADS; numThreads += THREAD_INCR) {
+            for (threadId = 1; threadId <= numThreads; threadId++) {
+                executor.execute(
+                        new LoadSource(numThreads, threadId, REQUESTS_PER_THREAD, filePath));
+            }
         }
         executor.shutdown();
     }
@@ -93,12 +102,14 @@ public class Client {
 }
 
 class LoadSource implements Runnable {
-    int i;
+    int numThreads;
+    int threadId;
     int requestsPerThread;
     String filePath;
 
-    public LoadSource(int i, int requestsPerThread, String filePath) {
-        this.i = i;
+    public LoadSource(int numThreads, int threadId, int requestsPerThread, String filePath) {
+        this.numThreads = numThreads;
+        this.threadId = threadId;
         this.requestsPerThread = requestsPerThread;
         this.filePath = filePath;
     }
@@ -108,34 +119,36 @@ class LoadSource implements Runnable {
         // From each load source, spawn multiple requests
         ExecutorService executor =
                 Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        for (int j = 1; j <= requestsPerThread; j++) {
-            executor.execute(new Request(i, j, filePath));
+        for (int requestId = 1; requestId <= requestsPerThread; requestId++) {
+            executor.execute(new Request(numThreads, threadId, requestId, filePath));
         }
         executor.shutdown();
     }
 }
 
 class Request implements Runnable {
-    int i;
-    int j;
+    int numThreads;
+    int threadId;
+    int requestId;
     String filePath;
 
-    public Request(int i, int j, String filePath) {
-        this.i = i;
-        this.j = j;
+    public Request(int numThreads, int threadId, int requestId, String filePath) {
+        this.numThreads = numThreads;
+        this.threadId = threadId;
+        this.requestId = requestId;
         this.filePath = filePath;
     }
 
     @Override
     public void run() {
         try {
-            String threadIndex = String.format("\n(%d, %d)", i, j);
+            String threadIndex = String.format("\n%d,%d,%d", numThreads, threadId, requestId);
             long t1 = System.nanoTime();
 
             Client.makeRequest();
 
             long t2 = System.nanoTime();
-            String content = String.format("%s, %d", threadIndex, t2 - t1);
+            String content = String.format("%s,%d", threadIndex, t2 - t1);
             FileIO.writeToFile(filePath, content, true);
         } catch (IOException e) {
             e.printStackTrace();
