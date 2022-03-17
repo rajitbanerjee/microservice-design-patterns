@@ -1,6 +1,5 @@
 package comp30910.model;
 
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,11 +8,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation {
-    private int id;
-    private int userId;
-    private int movieId;
+    private String clientName;
+    private String clientEmail;
     private int cinemaId;
-    private Date datetime;
+    private int movieId;
+    private String date;
+    private String showTime;
     private int tickets;
     private String ticketType;
     private double amount;

@@ -23,11 +23,20 @@ services:
     depends_on:
       - eureka-server
 
-  movies-service:
-    build: movies-service
-    container_name: movies-service
+  aggregator-service:
+    build: aggregator-service
+    container_name: aggregator-service
     environment:
       - SERVER_PORT=8081
+      - EUREKA_SERVER=eureka-server
+    depends_on:
+      - eureka-server
+
+  cinema-cineworld-service:
+    build: cinema-cineworld-service
+    container_name: cinema-cineworld-service
+    environment:
+      - SERVER_PORT=8082
       - EUREKA_SERVER=eureka-server
       - DATABASE_HOST=mongodb
       - DATABASE_PORT=27017
@@ -35,11 +44,23 @@ services:
       - mongodb
       - eureka-server
 
-  reservations-service:
-    build: reservations-service
-    container_name: reservations-service
+  cinema-dundrum-service:
+    build: cinema-dundrum-service
+    container_name: cinema-dundrum-service
     environment:
-      - SERVER_PORT=8082
+      - SERVER_PORT=8083
+      - EUREKA_SERVER=eureka-server
+      - DATABASE_HOST=mongodb
+      - DATABASE_PORT=27017
+    depends_on:
+      - mongodb
+      - eureka-server
+
+  cinema-ucd-service:
+    build: cinema-ucd-service
+    container_name: cinema-ucd-service
+    environment:
+      - SERVER_PORT=8084
       - EUREKA_SERVER=eureka-server
       - DATABASE_HOST=mongodb
       - DATABASE_PORT=27017

@@ -1,0 +1,21 @@
+server:
+  servlet:
+    context-path: /cinema/ucd
+  port: ${SERVER_PORT}
+
+spring:
+  application:
+    name: cinema-ucd-service
+  data:
+    mongodb:
+      database: cinema-ucd
+      host: ${DATABASE_HOST:mongodb}:${DATABASE_PORT:27017}
+
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 5
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_SERVER:eureka-server}:${EUREKA_PORT:8761}/eureka/

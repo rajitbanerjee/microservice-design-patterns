@@ -1,7 +1,0 @@
-POST http://localhost:8080/movies/findMovie
-Content-Type: application/json
-
-{
-  "movieName": "Belfast",
-  "cinemaName": "ODEON Stillorgan"
-}

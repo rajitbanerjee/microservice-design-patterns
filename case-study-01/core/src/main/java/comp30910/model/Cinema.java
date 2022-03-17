@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class Cinema {
     private String id;
     private String name;
-    private List<ShowTime> showTimes;
+    private List<Movie> movies;
 }
