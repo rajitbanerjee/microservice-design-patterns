@@ -8,10 +8,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @EnableEurekaClient
 @SpringBootApplication
-public class DundrumApplication {
+public class Application {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context =
-                SpringApplication.run(DundrumApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
         initDatabase(context);
     }
 
