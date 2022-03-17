@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Client {
-    private static final int NUM_THREADS = 500;
-    private static final int THREAD_INCR = 25;
-    private static final int REQUESTS_PER_THREAD = 3000;
+    private static final int NUM_THREADS = 50;
+    private static final int THREAD_INCR = 5;
+    private static final int REQUESTS_PER_THREAD = 10000;
     private static final String BASE_PATH = "results";
     private static final String COLUMNS = "Threads,ThreadID,RequestID,Duration (nanosec)";
     private static final String HOST = "http://localhost:8099";
