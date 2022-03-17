@@ -1,8 +1,8 @@
 package comp30910.service;
 
-import com.jsoniter.JsonIterator;
 import com.jsoniter.spi.TypeLiteral;
 import comp30910.model.Cinema;
+import comp30910.util.RestClient;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +25,18 @@ public class AggregatorService {
         return aggregate(httpMethod, endpoint, type, null);
     }
 
-    private <T> List<T> aggregate(
-            HttpMethod httpMethod, String endpoint, TypeLiteral<T> type, Object request) {
+    private <T, E> List<T> aggregate(
+            HttpMethod httpMethod, String endpoint, TypeLiteral<T> type, E body) {
         List<T> results = new ArrayList<>();
+        RestClient restClient = new RestClient(restTemplate);
+
         for (String serviceUrl : discoveryService.getCinemaUrlPrefixes()) {
             String url = apiGatewayHost + serviceUrl + endpoint;
-            String response = "";
             if (httpMethod.matches("GET")) {
-                response = restTemplate.getForObject(url, String.class);
+                results.add(restClient.getForObject(url, type));
             } else if (httpMethod.matches("POST")) {
-                response = restTemplate.postForObject(url, request, String.class);
+                results.add(restClient.postForObject(url, body, type));
             }
-            results.add(JsonIterator.deserialize(response, type));
         }
         return results;
     }

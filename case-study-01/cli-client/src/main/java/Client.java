@@ -1,26 +1,28 @@
+import com.google.common.collect.ImmutableMap;
+import com.jsoniter.spi.TypeLiteral;
+import comp30910.model.Cinema;
 import comp30910.model.Movie;
-import comp30910.model.MovieRequest;
 import comp30910.model.Reservation;
-import comp30910.utils.FileIO;
+import comp30910.util.FileIO;
+import comp30910.util.RandomPicker;
+import comp30910.util.RestClient;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpEntity;
-import org.springframework.web.client.RestTemplate;
+import java.util.stream.IntStream;
 
 public class Client {
-    private static final int NUM_THREADS = 3;
-    private static final int THREAD_INCR = 1;
-    private static final int REQUESTS_PER_THREAD = 5;
+    private static final int NUM_THREADS = 500;
+    private static final int THREAD_INCR = 50;
+    private static final int REQUESTS_PER_THREAD = 3000;
     private static final String BASE_PATH = "results";
     private static final String HEADING = "(Thread, Request), Duration (nanosec)";
-    private static final String HOST = "localhost:8080";
+    private static final String HOST = "http://localhost:8080";
     private static int i;
 
     public static void main(String[] args) throws IOException {
@@ -44,49 +46,50 @@ public class Client {
         return sdf.format(timestamp);
     }
 
-    public static void makeRequest() throws InterruptedException {
-        RestTemplate restTemplate = new RestTemplate();
-        String findMovieUrl = String.format("http://%s/movies/findMovie", HOST);
+    public static void makeRequest() {
+        try {
+            RestClient restClient = new RestClient();
+            String clientName = "Jane Doe";
+            String clientEmail = "jane.doe@ucd.ie";
+            String date = "2022-03-17";
+            List<Integer> numTickets = IntStream.range(1, 11).boxed().collect(Collectors.toList());
+            Map<String, Double> ticketTypesAmounts =
+                    ImmutableMap.of("Silver", 10.00, "Gold", 12.00, "Platinum", 15.00);
 
-        String movieName = "Belfast";
-        String cinemaName = "ODEON Stillorgan";
-        HttpEntity<MovieRequest> movieRequest =
-                new HttpEntity<>(new MovieRequest(movieName, cinemaName));
+            String movieListUrl = HOST + "/api/movie/list";
+            TypeLiteral<List<Cinema>> cinemaListType = new TypeLiteral<>() {};
+            List<Cinema> cinemas = restClient.getForObject(movieListUrl, cinemaListType);
 
-        Movie movie = restTemplate.postForObject(findMovieUrl, movieRequest, Movie.class);
-        List<String> showTimes =
-                movie.getShowTimes().stream()
-                        .filter(showTime -> showTime.getCinemaName().equalsIgnoreCase(cinemaName))
-                        .collect(Collectors.toList())
-                        .get(0)
-                        .getTimes();
-        int randomElementIndex =
-                ThreadLocalRandom.current().nextInt(showTimes.size()) % showTimes.size();
-        HttpEntity<Reservation> reservationRequest =
-                new HttpEntity<>(
-                        new Reservation(
-                                movieName,
-                                cinemaName,
-                                new Date(),
-                                showTimes.get(randomElementIndex),
-                                randomElementIndex,
-                                "Gold",
-                                12.00,
-                                "John Doe",
-                                "john.doe@xyz.com"));
+            Cinema randomCinema = RandomPicker.pickFromCollection(cinemas);
+            Movie movie = RandomPicker.pickFromCollection(randomCinema.getMovies());
+            String randomShowTime = RandomPicker.pickFromCollection(movie.getShowTimes());
+            String cinemaName = randomCinema.getCinemaName();
+            Integer tickets = RandomPicker.pickFromCollection(numTickets);
+            String ticketType = RandomPicker.pickFromCollection(ticketTypesAmounts.keySet());
+            Double amount = ticketTypesAmounts.get(ticketType) * tickets;
+
+            Reservation body =
+                    new Reservation(
+                            clientName,
+                            clientEmail,
+                            movie.getId(),
+                            date,
+                            randomShowTime,
+                            tickets,
+                            ticketType,
+                            amount);
+            String reservationMakeUrl =
+                    String.format("%s/cinema/%s/reservation/make", HOST, cinemaName);
+            TypeLiteral<Reservation> reservationType = new TypeLiteral<>() {};
+            Reservation reservation =
+                    restClient.postForObject(reservationMakeUrl, body, reservationType);
+
+            System.out.println(reservation);
+        } catch (Exception e) {
+            // Suspected: circuit broken
+            System.out.println("Error: " + e.getMessage());
+        }
     }
-
-    // {
-    // "movieName": "Belfast",
-    // "cinemaName": "ODEON Stillorgan",
-    // "date": "2022-02-07",
-    // "time": "18:45",
-    // "numTickets": 1,
-    // "ticketCategory": "Gold",
-    // "totalFarePaid": 12.00,
-    // "clientName": "John Doe",
-    // "clientEmail": "john.doe@xyz.com"
-    // }
 }
 
 class LoadSource implements Runnable {
@@ -128,11 +131,13 @@ class Request implements Runnable {
         try {
             String threadIndex = String.format("\n(%d, %d)", i, j);
             long t1 = System.nanoTime();
+
             Client.makeRequest();
+
             long t2 = System.nanoTime();
             String content = String.format("%s, %d", threadIndex, t2 - t1);
             FileIO.writeToFile(filePath, content, true);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

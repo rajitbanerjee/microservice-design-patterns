@@ -20,12 +20,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
   <dependencies>
-    <!-- core module -->
-    <dependency>
-      <groupId>comp30910</groupId>
-      <artifactId>core</artifactId>
-      <version>0.0.1</version>
-    </dependency>
     <!-- Spring Cloud -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>

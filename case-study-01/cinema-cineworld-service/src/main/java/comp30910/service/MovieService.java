@@ -5,7 +5,7 @@ import com.jsoniter.spi.TypeLiteral;
 import comp30910.exception.ResourceNotFoundException;
 import comp30910.model.Movie;
 import comp30910.repository.MovieRepository;
-import comp30910.utils.FileIO;
+import comp30910.util.FileIO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

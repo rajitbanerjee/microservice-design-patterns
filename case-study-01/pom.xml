@@ -15,6 +15,6 @@
     <module>cinema-dundrum-service</module>
     <module>cinema-ucd-service</module>
 
-    <!-- <module>cli-client</module> -->
+    <module>cli-client</module>
   </modules>
 </project>

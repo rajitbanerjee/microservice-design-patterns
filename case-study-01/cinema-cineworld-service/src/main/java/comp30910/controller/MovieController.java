@@ -29,7 +29,8 @@ public class MovieController {
     @GetMapping("/list")
     public Cinema list() {
         String id = Integer.valueOf(serviceName.hashCode()).toString();
-        String cinemaName = serviceName.replaceFirst(SERVICE_PREFIX, "").replaceFirst(SERVICE_SUFFIX, "");
+        String cinemaName =
+                serviceName.replaceFirst(SERVICE_PREFIX, "").replaceFirst(SERVICE_SUFFIX, "");
         List<Movie> movies = movieService.findAll();
         return new Cinema(id, cinemaName, movies);
     }

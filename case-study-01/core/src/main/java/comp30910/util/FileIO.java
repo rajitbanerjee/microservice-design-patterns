@@ -1,4 +1,4 @@
-package comp30910.utils;
+package comp30910.util;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharSink;
