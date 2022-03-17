@@ -22,7 +22,7 @@ public class Client {
     private static final int REQUESTS_PER_THREAD = 3000;
     private static final String BASE_PATH = "results";
     private static final String HEADING = "(Thread, Request), Duration (nanosec)";
-    private static final String HOST = "http://localhost:8080";
+    private static final String HOST = "http://localhost:8099";
     private static int i;
 
     public static void main(String[] args) throws IOException {

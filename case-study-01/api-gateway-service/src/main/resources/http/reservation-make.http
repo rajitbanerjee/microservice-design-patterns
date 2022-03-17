@@ -1,4 +1,4 @@
-POST http://localhost:8080/cinema/ucd/reservation/make
+POST http://localhost:8099/cinema/ucd/reservation/make
 Content-Type: application/json
 
 {
