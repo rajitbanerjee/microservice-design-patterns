@@ -1,6 +1,6 @@
 package comp30910.controller;
 
-import comp30910.model.Movie;
+import comp30910.model.Cinema;
 import comp30910.service.AggregatorService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class AggregatorController {
     private final AggregatorService aggregatorService;
 
     @GetMapping("/movie/list")
-    public List<Movie> movieList() {
-        return aggregatorService.movieList(HttpMethod.GET, "/movie/list");
+    public List<Cinema> cinemaList() {
+        return aggregatorService.cinemaList(HttpMethod.GET, "/movie/list");
     }
 }

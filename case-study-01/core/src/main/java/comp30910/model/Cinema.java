@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Cinema {
     private String id;
-    private String name;
+    private String cinemaName;
     private List<Movie> movies;
 }

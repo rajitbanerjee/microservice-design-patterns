@@ -2,10 +2,9 @@ package comp30910.service;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.spi.TypeLiteral;
-import comp30910.model.Movie;
+import comp30910.model.Cinema;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -21,14 +20,13 @@ public class AggregatorService {
     @Value("${api_gateway_host}")
     private String apiGatewayHost;
 
-    public List<Movie> movieList(HttpMethod httpMethod, String endpoint) {
-        TypeLiteral<List<Movie>> type = new TypeLiteral<>() {};
-        List<List<Movie>> results = aggregate(endpoint, httpMethod, type, null);
-        return results.stream().flatMap(List::stream).collect(Collectors.toList());
+    public List<Cinema> cinemaList(HttpMethod httpMethod, String endpoint) {
+        TypeLiteral<Cinema> type = new TypeLiteral<>() {};
+        return aggregate(httpMethod, endpoint, type, null);
     }
 
     private <T> List<T> aggregate(
-            String endpoint, HttpMethod httpMethod, TypeLiteral<T> type, Object request) {
+            HttpMethod httpMethod, String endpoint, TypeLiteral<T> type, Object request) {
         List<T> results = new ArrayList<>();
         for (String serviceUrl : discoveryService.getCinemaUrlPrefixes()) {
             String url = apiGatewayHost + serviceUrl + endpoint;

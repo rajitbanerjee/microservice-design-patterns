@@ -1,11 +1,13 @@
 package comp30910.controller;
 
+import comp30910.model.Cinema;
 import comp30910.model.Movie;
 import comp30910.model.MovieRequest;
 import comp30910.service.MovieService;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/movie")
 public class MovieController {
     private final MovieService movieService;
+    private static final String SERVICE_PREFIX = "cinema-";
+    private static final String SERVICE_SUFFIX = "-service";
+
+    @Value("${spring.application.name}")
+    private String serviceName;
 
     @GetMapping("/list")
-    public List<Movie> list() {
-        return movieService.findAll();
+    public Cinema list() {
+        String id = Integer.valueOf(serviceName.hashCode()).toString();
+        String cinemaName = serviceName.replaceFirst(SERVICE_PREFIX, "").replaceFirst(SERVICE_SUFFIX, "");
+        List<Movie> movies = movieService.findAll();
+        return new Cinema(id, cinemaName, movies);
     }
 
     @PostMapping("/find")

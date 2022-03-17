@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 public class Reservation {
     private String clientName;
     private String clientEmail;
-    private int cinemaId;
-    private int movieId;
+    private String movieId;
     private String date;
     private String showTime;
     private int tickets;
