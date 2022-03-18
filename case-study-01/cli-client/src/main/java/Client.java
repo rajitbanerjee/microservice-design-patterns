@@ -1,11 +1,13 @@
 import com.google.common.collect.ImmutableMap;
 import com.jsoniter.spi.TypeLiteral;
+
 import comp30910.model.Cinema;
 import comp30910.model.Movie;
 import comp30910.model.Reservation;
 import comp30910.util.FileIO;
 import comp30910.util.RandomPicker;
 import comp30910.util.RestClient;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -16,10 +18,11 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+// TODO Fix out of memory error with threads/ExecutorService or just switch to JMeter
 public class Client {
-    private static final int NUM_THREADS = 50;
-    private static final int THREAD_INCR = 5;
-    private static final int REQUESTS_PER_THREAD = 10000;
+    private static final int NUM_THREADS = 15;
+    private static final int THREAD_INCR = 3;
+    private static final int REQUESTS_PER_THREAD = 3000;
     private static final String BASE_PATH = "results";
     private static final String COLUMNS = "Threads,ThreadID,RequestID,Duration (nanosec)";
     private static final String HOST = "http://localhost:8099";
@@ -38,15 +41,14 @@ public class Client {
         FileIO.writeToFile(filePath, COLUMNS, true);
 
         // Set up new load sources (threads)
-        ExecutorService executor =
-                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (numThreads = THREAD_INCR; numThreads <= NUM_THREADS; numThreads += THREAD_INCR) {
             for (threadId = 1; threadId <= numThreads; threadId++) {
+                ExecutorService executor = Executors.newFixedThreadPool(threadId);
                 executor.execute(
                         new LoadSource(numThreads, threadId, REQUESTS_PER_THREAD, filePath));
+                executor.shutdown();
             }
         }
-        executor.shutdown();
     }
 
     private static String getCurrentTimestamp(String format) {
@@ -118,7 +120,7 @@ class LoadSource implements Runnable {
     public void run() {
         // From each load source, spawn multiple requests
         ExecutorService executor =
-                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+                Executors.newFixedThreadPool(requestsPerThread);
         for (int requestId = 1; requestId <= requestsPerThread; requestId++) {
             executor.execute(new Request(numThreads, threadId, requestId, filePath));
         }
