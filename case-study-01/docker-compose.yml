@@ -1,0 +1,70 @@
+version: "3"
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+
+  eureka-server:
+    build: eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SERVER_PORT=8761
+
+  api-gateway-service:
+    build: api-gateway-service
+    container_name: api-gateway-service
+    ports:
+      - "8099:8099"
+    environment:
+      - SERVER_PORT=8099
+      - EUREKA_SERVER=eureka-server
+    depends_on:
+      - eureka-server
+
+  aggregator-service:
+    build: aggregator-service
+    container_name: aggregator-service
+    environment:
+      - SERVER_PORT=8081
+      - EUREKA_SERVER=eureka-server
+      - API_GATEWAY_HOST=lb://API-GATEWAY-SERVICE
+    depends_on:
+      - eureka-server
+
+  cinema-cineworld-service:
+    build: cinema-cineworld-service
+    container_name: cinema-cineworld-service
+    environment:
+      - SERVER_PORT=8082
+      - EUREKA_SERVER=eureka-server
+      - DATABASE_HOST=mongodb
+      - DATABASE_PORT=27017
+    depends_on:
+      - mongodb
+      - eureka-server
+
+  cinema-dundrum-service:
+    build: cinema-dundrum-service
+    container_name: cinema-dundrum-service
+    environment:
+      - SERVER_PORT=8083
+      - EUREKA_SERVER=eureka-server
+      - DATABASE_HOST=mongodb
+      - DATABASE_PORT=27017
+    depends_on:
+      - mongodb
+      - eureka-server
+
+  cinema-ucd-service:
+    build: cinema-ucd-service
+    container_name: cinema-ucd-service
+    environment:
+      - SERVER_PORT=8084
+      - EUREKA_SERVER=eureka-server
+      - DATABASE_HOST=mongodb
+      - DATABASE_PORT=27017
+    depends_on:
+      - mongodb
+      - eureka-server

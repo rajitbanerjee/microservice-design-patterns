@@ -1,0 +1,14 @@
+POST http://localhost:8099/cinema/ucd/reservation/make
+Content-Type: application/json
+
+{
+    "clientName": "Jane Doe",
+    "clientEmail": "jane.doe@ucd.ie",
+    "movieId": "movie001",
+    "date": "2022-03-17",
+    "showTime": "17:00",
+    "tickets": 2,
+    "ticketType": "Gold",
+    "amount": 30.00
+}
+    
