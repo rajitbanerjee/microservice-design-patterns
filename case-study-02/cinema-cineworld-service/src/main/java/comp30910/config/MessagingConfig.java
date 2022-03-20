@@ -19,6 +19,9 @@ public class MessagingConfig {
     @Value("${amqp.request.routingKey}")
     private String requestRoutingKey;
 
+    @Value("${amqp.request.serviceOnlyRoutingKey}")
+    private String serviceOnlyRequestRoutingKey;
+
     @Value("${amqp.response.routingKey}")
     private String responseRoutingKey;
 
@@ -38,8 +41,14 @@ public class MessagingConfig {
 
     @Bean
     @Qualifier("requestBinding")
-    public Binding requestBinding(TopicExchange exchange, @Qualifier("requestQueue") Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(requestRoutingKey);
+    public Binding requestBinding(TopicExchange exchange) {
+        return BindingBuilder.bind(requestQueue()).to(exchange).with(requestRoutingKey);
+    }
+
+    @Bean
+    @Qualifier("serviceOnlyRequestBinding")
+    public Binding serviceOnlyRequestBinding(TopicExchange exchange) {
+        return BindingBuilder.bind(requestQueue()).to(exchange).with(serviceOnlyRequestRoutingKey);
     }
 
     @Bean
