@@ -10,10 +10,6 @@ import org.springframework.stereotype.Service;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
 
-    // public List<Reservation> findAll() {
-    //     return reservationRepository.findAll();
-    // }
-
     public Reservation makeReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
     }

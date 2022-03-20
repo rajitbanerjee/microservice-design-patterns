@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: broker-service
+
+amqp:
+  exchange: cinema
+  request:
+    routingKey: request.to.cinema
+  response:
+    routingKey: response.from.cinema
+

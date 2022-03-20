@@ -7,10 +7,9 @@
 
   <modules>
     <module>core</module>
-    <!-- <module>broker-service</module> -->
+    <module>broker-service</module>
     <module>cinema-cineworld-service</module>
-    <!-- <module>cinema-dundrum-service</module> -->
-    <!-- <module>cinema-ucd-service</module> -->
-    <!-- <module>cli-client</module> -->
+    <module>cinema-dundrum-service</module>
+    <module>cinema-ucd-service</module>
   </modules>
 </project>

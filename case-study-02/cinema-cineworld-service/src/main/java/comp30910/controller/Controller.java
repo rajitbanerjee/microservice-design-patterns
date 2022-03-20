@@ -18,27 +18,24 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Component
 @RequiredArgsConstructor
 public class Controller {
-    private final RabbitTemplate rabbitTemplate;
-    private final MovieService movieService;
-    private final ReservationService reservationsService;
     private static final String SERVICE_PREFIX = "cinema-";
     private static final String SERVICE_SUFFIX = "-service";
+
+    private final MovieService movieService;
+    private final ReservationService reservationsService;
+
+    private final RabbitTemplate rabbitTemplate;
+    private final TopicExchange exchange;
 
     @Qualifier("responseQueue")
     private final Queue responseQueue;
 
-    private final TopicExchange exchange;
-
     @Value("${spring.application.name}")
     private String serviceName;
-
-    @Value("${amqp.request.routingKey}")
-    private String requestRoutingKey;
 
     @Value("${amqp.response.routingKey}")
     private String responseRoutingKey;
@@ -57,10 +54,13 @@ public class Controller {
 
         Object response = null;
         switch (request.getEndpoint()) {
-            case "/list":
+                // Movie
+            case "/movie/list":
                 response = list();
                 break;
-            case "/make":
+
+                // Reservation
+            case "/reservation/make":
                 Reservation reservation = (Reservation) request.getBody();
                 response = make(reservation);
                 break;
@@ -77,7 +77,7 @@ public class Controller {
         return new Cinema(id, cinemaName, movies);
     }
 
-    public Reservation make(@RequestBody Reservation reservation) {
+    public Reservation make(Reservation reservation) {
         return reservationsService.makeReservation(reservation);
     }
 }

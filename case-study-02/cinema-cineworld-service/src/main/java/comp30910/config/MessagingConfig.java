@@ -22,6 +22,9 @@ public class MessagingConfig {
     @Value("${amqp.response.routingKey}")
     private String responseRoutingKey;
 
+    @Value("${spring.application.name}")
+    private String serviceName;
+
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(amqpExchange);
@@ -30,7 +33,7 @@ public class MessagingConfig {
     @Bean
     @Qualifier("requestQueue")
     public Queue requestQueue() {
-        return new Queue("requestQueue");
+        return new Queue("requestQueue-" + serviceName);
     }
 
     @Bean
@@ -46,21 +49,7 @@ public class MessagingConfig {
     }
 
     @Bean
-    @Qualifier("responseBinding")
-    public Binding responseBinding(
-            TopicExchange exchange, @Qualifier("responseQueue") Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(responseRoutingKey);
-    }
-
-    @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
-
-    // @Bean
-    // public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-    //     final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-    //     rabbitTemplate.setMessageConverter(messageConverter());
-    //     return rabbitTemplate;
-    // }
 }

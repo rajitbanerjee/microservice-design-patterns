@@ -28,18 +28,6 @@ public class MessagingConfig {
     }
 
     @Bean
-    @Qualifier("requestQueue")
-    public Queue requestQueue() {
-        return new Queue("requestQueue");
-    }
-
-    @Bean
-    @Qualifier("requestBinding")
-    public Binding requestBinding(TopicExchange exchange, @Qualifier("requestQueue") Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(requestRoutingKey);
-    }
-
-    @Bean
     @Qualifier("responseQueue")
     public Queue responseQueue() {
         return new Queue("responseQueue");
@@ -56,11 +44,4 @@ public class MessagingConfig {
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
-
-    // @Bean
-    // public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-    //     final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-    //     rabbitTemplate.setMessageConverter(messageConverter());
-    //     return rabbitTemplate;
-    // }
 }
