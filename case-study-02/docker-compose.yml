@@ -1,0 +1,64 @@
+version: "3"
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # rabbitmq default
+      - "15672:15672" # rabbitmq management
+      - "3000:3000"   # grafana dashboard
+    volumes:
+      - "./rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins"
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+
+  # broker:
+  #   build: broker
+  #   container_name: broker
+  #   ports:
+  #     - "8099:8099"
+  #   environment:
+  #     - SERVER_PORT=8099
+  #     - SPRING_RABBITMQ_HOST=rabbitmq
+  #   depends_on:
+  #     - rabbitmq
+  #     - mongodb
+
+  cinema-cineworld-service:
+    build: cinema-cineworld-service
+    container_name: cinema-cineworld-service
+    environment:
+      - SERVER_PORT=8082
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_DATABASE=cinema-cineworld
+      - SPRING_DATA_MONGODB_PORT=27017
+    depends_on:
+      - rabbitmq
+      - mongodb
+
+  # cinema-dundrum-service:
+  #   build: cinema-dundrum-service
+  #   container_name: cinema-dundrum-service
+  #   environment:
+  #     - SERVER_PORT=8083
+  #     - SPRING_RABBITMQ_HOST=rabbitmq
+  #     - DATABASE_HOST=mongodb
+  #     - DATABASE_PORT=27017
+  #   depends_on:
+  #     - rabbitmq
+  #     - mongodb
+
+  # cinema-ucd-service:
+  #   build: cinema-ucd-service
+  #   container_name: cinema-ucd-service
+  #   environment:
+  #     - SERVER_PORT=8084
+  #     - SPRING_RABBITMQ_HOST=rabbitmq
+  #     - DATABASE_HOST=mongodb
+  #     - DATABASE_PORT=27017
+  #   depends_on:
+  #     - rabbitmq
+  #     - mongodb

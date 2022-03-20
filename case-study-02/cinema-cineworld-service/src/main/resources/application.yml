@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: cinema-cineworld-service
+
+data_file: data/movies.json
+
+amqp:
+  exchange: cinema
+  request:
+    routingKey: request.to.cinema
+  response:
+    routingKey: response.from.cinema
