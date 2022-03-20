@@ -1,19 +1,22 @@
 package comp30910.service;
 
-import comp30910.model.RequestMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.SerializerMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import comp30910.model.RequestMessage;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +38,12 @@ public class BrokerService {
     }
 
     private void sendRequest(RequestMessage requestMessage, String correlationId) {
-        MessagePostProcessor messagePostProcessor =
-                message -> {
-                    MessageProperties messageProperties = message.getMessageProperties();
-                    messageProperties.setCorrelationId(correlationId);
-                    return message;
-                };
+        MessagePostProcessor messagePostProcessor = message -> {
+            MessageProperties messageProperties = message.getMessageProperties();
+            messageProperties.setCorrelationId(correlationId);
+            return message;
+        };
+        rabbitTemplate.setMessageConverter(new SerializerMessageConverter());
         rabbitTemplate.convertAndSend(
                 exchange.getName(), requestRoutingKey, requestMessage, messagePostProcessor);
     }

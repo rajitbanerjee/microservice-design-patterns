@@ -1,5 +1,6 @@
 package comp30910.model;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestMessage {
+public class RequestMessage implements Serializable {
     private String endpoint;
     private Object body;
 }
