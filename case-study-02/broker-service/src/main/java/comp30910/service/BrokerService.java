@@ -26,8 +26,7 @@ public class BrokerService {
             throws InterruptedException {
         String correlationId = UUID.randomUUID().toString();
         sendRequest(requestMessage, correlationId, routingKey);
-        // TODO? Switch to async instead of rest http call and sleep
-        Thread.sleep(2000); // Intentional delay
+        Thread.sleep(500); // Intentional delay
         return cache.get(correlationId);
     }
 
