@@ -1,0 +1,15 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>comp30910</groupId>
+  <artifactId>case-study-02</artifactId>
+  <version>0.0.1</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>core</module>
+    <module>broker-service</module>
+    <module>cinema-cineworld-service</module>
+    <module>cinema-dundrum-service</module>
+    <module>cinema-ucd-service</module>
+  </modules>
+</project>

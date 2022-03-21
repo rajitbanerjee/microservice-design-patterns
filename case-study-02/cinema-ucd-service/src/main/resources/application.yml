@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: cinema-ucd-service
+
+data_file: data/movies.json
+
+amqp:
+  exchange: cinema
+  request:
+    routingKey: request.to.cinema
+    serviceOnlyRoutingKey: request.to.cinema.ucd
+  response:
+    routingKey: response.from.cinema

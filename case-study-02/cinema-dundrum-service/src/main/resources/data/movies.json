@@ -1,0 +1,12 @@
+[
+  {
+    "id": "movie003",
+    "name": "The King's Man",
+    "showTimes": ["11:00", "14:00", "17:00"]
+  },
+  {
+    "id": "movie004",
+    "name": "The Godfather",
+    "showTimes": ["20:00"]
+  }
+]
