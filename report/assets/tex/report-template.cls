@@ -1,4 +1,4 @@
-\ProvidesClass{report-template}
+\ProvidesClass{./assets/tex/report-template}
 \LoadClass[11pt, titlepage]{report}
 \usepackage[paperwidth=21cm,paperheight=29.7cm,includehead,headheight=1.5cm,pdftex,hmargin={3cm,2.5cm},vmargin={0cm,2cm},]{geometry} 
 \setlength{\parindent}{0cm} 
@@ -99,7 +99,7 @@
 \author{\Large \studentname}\\[0.5cm]\rule{4cm}{1pt}\\[0.5cm]
 \textsf{\Large Student ID: \studentid}\\[0.5cm]\rule{4cm}{1pt}\\[0.5cm]
 \textsf{\Large  A thesis submitted in part fulfilment of the degree of\\[0.5cm]
-\textbf{BSc. (Hons.) in Computer Science with Data Science}}\\[0.5cm]
+\textbf{BSc. (Hons.) in Computer Science}}\\[0.5cm]
 \textsf{\Large  \textbf{Supervisor:}  \supervisorname}\\[1.5cm]
 \includegraphics[height=5.5cm]{./assets/images/ucd-logo.pdf}\\[1cm]
 \textsf{\Large UCD School of Computer Science\\

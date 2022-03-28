@@ -11,8 +11,7 @@
 
 ### Contents
 
-- [Report](./report/)
-    - [Project Specification](./report/fyp-specification.pdf)
-    - [Interim Report](./report/interim-report.pdf)
-    - [Final Report](./report/final-report.pdf)
+- [Report](./report/final-report.pdf)
+- [Case Study 1](./case-study-01/)
+- [Case Study 2](./case-study-02/)
 
