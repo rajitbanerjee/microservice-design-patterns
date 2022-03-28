@@ -38,7 +38,7 @@
 {0mm}%                            % the indent
 {6.4mm}%                          % the beforeskip
 {1.1mm}%                          % the afterskip
-{\Large\bfseries\sffamily}}       % the style
+{\large\bfseries\sffamily}}       % the style
 
 \renewcommand{\subsubsection}{\@startsection
 {subsubsection}%                  % the name

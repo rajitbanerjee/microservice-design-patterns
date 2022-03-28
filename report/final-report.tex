@@ -21,6 +21,7 @@
 
 % Bibliography settings
 \usepackage[british]{babel}
+\usepackage{csquotes}
 \usepackage[backend=biber,style=ieee,urldate=long,dashed=false]{biblatex}
 \addbibresource{./assets/tex/bibliography.bib}
 \usepackage{xpatch}
@@ -47,34 +48,26 @@
 %%%%%%%%
 \tableofcontents
 
-%%%%%%%%%
-%\input{./chapters/abstract.tex}
+%%%%%%%%
+\input{./chapters/abstract.tex}
 
 %%%%%%%%
 \input{./chapters/specification.tex}
 
-%%%%%%%%%
-%\input{./chapters/introduction.tex}
+%%%%%%%%
+\input{./chapters/introduction.tex}
 
 %%%%%%%%
 \input{./chapters/related-work.tex}
 
-%%%%%%%%%
-%\input{./chapters/outline.tex}
+%%%%%%%% 
+\input{./chapters/case-studies.tex}
 
-%%%%%%%% Other possible chapter ideas (not necessarily all)
-% Options for core:
-% \input{./chapters/design-and-implementation.tex}
-% \input{./chapters/core-contribution.tex}
-% \input{./chapters/case-studies.tex}
+%%%%%%%%
+\input{./chapters/summary.tex}
 
-% \input{./chapters/evaluation.tex} <- required?
-
-%%%%%%%%%
-%\input{./chapters/summary.tex}
-
-%%%%%%%%%
-%\input{./chapters/acknowledgements.tex}
+%%%%%%%%
+\input{./chapters/acknowledgements.tex}
 
 %%%%%%%%
 \printbibliography
