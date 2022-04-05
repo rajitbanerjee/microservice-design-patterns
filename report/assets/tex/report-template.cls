@@ -4,6 +4,7 @@
 \setlength{\parindent}{0cm} 
 \renewcommand{\baselinestretch}{1.2}
 \parskip=1em
+\usepackage{float}
 
 \renewcommand{\familydefault}{\sfdefault}
 \renewcommand{\contentsname}{Table of Contents}
