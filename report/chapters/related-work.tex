@@ -14,7 +14,7 @@ The aforementioned definitions are first compared in 2016 by Zimmermann \cite{zi
 
 In the past decade or so, the adoption of microservices has been accelerated by the success of companies such as Amazon Web Services (AWS) \footnote{\url{https://aws.amazon.com}}, Netflix \footnote{\url{https://www.netflix.com}}, Spotify \footnote{\url{https://www.spotify.com}} and Uber \footnote{\url{https://www.uber.com}}. Amazon also has a whitepaper describing how microservices can be implemented using AWS cloud services, taking into consideration ways to reduce operational complexity and design distributed systems components (service discovery, data management, configuration management, asynchronous communication, and monitoring) \cite{aws-microservices}.
 
-\section{Software design patterns}
+\section{Software Design Patterns}
 
 In software engineering and related fields, \textit{design patterns} are generally defined as reusable solutions to commonly occurring problems in software design. Although design patterns cannot be directly converted to code (like an algorithm described in pseudo-code), they provide a blueprint on how a problem can be approached in various situations. Unlike \textit{algorithms}, design patterns are not meant to define any clear set of instructions to reach a target, but instead provide a high level description of an approach. The characteristic features and final result are laid out, however the actual implementation of the pattern is left up to the requirements of the business problem and use case. Every "useful" design pattern should describe the following aspects: the intent and motivation, the proposed solution, the appropriate scenarios where the solution is applicable, known consequences and possible unknowns, as well as some examples and implementation suggestions.
 
@@ -30,7 +30,7 @@ The most widely known literature on the topic is the 1994 textbook \cite{gof94} 
 
 In recent times, design patterns have had a tendency of coming across as somewhat controversial, primarily due to a lack of understanding about their purpose. In this regard, it is important for developers to note that in the end, design patterns are merely guidelines and not hard-and-fast rules that must be conformed to.
 
-\section{Common design patterns in microservice architecture}
+\section{Common Design Patterns in Microservice Architecture}
 
 Several attempts have been made to  apply the concepts of software design patterns to microservices and categorise commonly seen patterns. In Fig. \ref{fig:richardson-patterns}, C. Richardson provides a number of pattern groups, including \textit{Decomposition, Data management, Transactional messaging, Testing, Deployment, Cross-cutting concerns, Communication style, External API, Service discovery, Reliability, Security, Observability} and \textit{UI} \cite{richardson-patterns}.
 
@@ -71,7 +71,7 @@ It is interesting to note that there are certain similarities between the \texti
 
 Apart from the sources mentioned above, there have been some studies conducted to recognise architectural patterns for microservice-based systems. In \cite{bogner18}, Bogner et al. perform a qualitative analysis of SOA (Service-oriented Architecture) patterns in the context of microservices. Out of 118 SOA patterns (sources: \cite{erl09}, \cite{erl12}, \cite{rotem12}), the authors found that 63\% were fully applicable, 25\% were partially applicable and 12\% were not at all applicable to microservices. Taibi et al. \cite{taibi18} tackle the issue of inadequate understanding regarding the adoption of microservice architectures. The authors explore a number of widely adopted design patterns, under the categories of \textit{Orchestration and Coordination, Deployment} and \textit{Data storage}, by elaborating the advantages, disadvantages and lessons learnt from multiple case studies. Thus, a catalogue of patterns is presented, all constituents of which demonstrate the common structural properties of microservices as discussed earlier.
 
-\section{Issues and challenges with microservices}
+\section{Issues and Challenges with Microservices}
 
 Although microservice architectures have a number of benefits, it is important to note that they are not universally applicable to solve all problems at scale. Moreover, there are various trade-offs to consider, and \textit{anti-patterns} ("bad practices") to avoid when building new microservice-based systems or transitioning from monolithic applications.
 
@@ -90,17 +90,17 @@ Finally, it is important to avoid common anti-patterns that are known to be coun
   \item Improper versioning - services such as APIs not designed for changes and upgrades, leading to reduced maintainability.
 \end{itemize}
 
-\section{Performance engineering}
+\section{Performance Engineering}
 
-Having discussed the background research and ideas related to microservice-based systems and design patterns, it is now appropriate to narrow down the focus to performance engineering for distributed systems, especially for microservices and their design patterns. Software performance engineering (SPE) is a vital part of the software design lifecycle, including, but not limited to performance simulation and modelling (e.g. using UML \footnote{\url{https://www.uml.org}} diagrams), benchmarking, monitoring, and performance testing.
+Having discussed the background research and ideas related to microservice-based systems and design patterns, it is now appropriate to narrow down the focus to performance engineering for distributed systems, especially for microservices and their design patterns. Performance may be defined as the extent to which a system meets its timeliness objectives, and the efficiency with which this is achieved. Software performance engineering (SPE) is a vital part of the software design lifecycle, including, but not limited to performance simulation and modelling (e.g. using UML \footnote{\url{https://www.uml.org}} diagrams), benchmarking, monitoring, and performance testing.
 
-\subsection{Distributed systems}
+\subsection{Distributed Systems}
 
 Innovation in performance engineering has often been driven by breakthroughs in industry, out of necessity. In fact, Netflix is well known for pioneering the concept of \textit{chaos engineering} as early as 2011, when migrating to the cloud (AWS). To address the inadequacy of available resilience testing, the company invented a suite of tools (known as the "Simian Army" \cite{netflix-chaos}), the most significant of which is Chaos Monkey \footnote{\url{https://netflix.github.io/chaosmonkey/}}. Chaos engineering tests the performance of a large-scale system when subjected to experimental failure scenarios, especially in production environments.
 
 Similarly, there exists the principle of \textit{ownership} at Amazon, where it is the development team's responsibility to handle the entire software lifecycle including operations, performance testing, and monitoring ("you build it, you run it" \cite{ohanlon06}). Some contributions from academia include the introduction of a policy-based adaptive framework to automate the usage of diagnosis tools in the performance testing of clustered systems by Portillo-Dominguez et al. \cite{portillo14}, \cite{portillo17}. The authors refer to the increased complexity of performance testing in distributed environments and provide a framework (PHOEBE) to increase time savings for testers.
 
-\subsection{Evaluation of microservice-based systems}
+\subsection{Evaluation of Microservice-Based Systems}
 
 The 2015 study by Amaral et al. \cite{amaral15} stands out as the first work of its kind, as claimed by the authors: to analyse the performance of microservice architectures using containers (specifically Docker \footnote{\url{https://www.docker.com}}). The paper provides a comparison of CPU performance and network running benchmarking for two models of designing microservices: master-slave and nested-container.
 
