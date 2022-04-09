@@ -25,16 +25,7 @@ A minor variation of the API gateway pattern is called \textit{backends for fron
 
 Despite its popularity and usefulness, the API gateway pattern brings with it a few issues that should be taken into consideration. For instance, it could become a bottleneck or single point of failure, if resiliency and fault tolerance measures are not put in place. Performance testing methods such as load testing should be explored to prevent failure scenarios.
 
-In this case study, the \code{api-gateway-service} uses the Spring Cloud project to introduce a gateway in the application.
-
-\begin{lstlisting}[language=XML, caption=Maven dependency for Spring Cloud Gateway]
-  <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-gateway</artifactId>
-  </dependency>
-\end{lstlisting}
-
-The gateway is configured using the module's \code{application.yml} resource file, which Spring Boot can access to set up all the routing logic supported by the application. From a performance perspective, an API gateway provides several benefits, such as options to set up request authentication, rate-limiting to prevent service over-use and DDoS attacks, monitoring and analytics endpoints (using Spring Boot Actuator), reducing latency by serving cached responses, as well as load balancing. A very simple gateway configuration example is shown below. The \code{lb://} prefix in \code{uri:} makes use of Spring Cloud Gateway's built-in load balancer, to provide round robin client-side load balancing features during calls to other microservices. A 503 Service Unavailable Error is returned when a service cannot be found, which is more appropriate than a basic Java exception stack trace shown when using \code{http://} or \code{https://} prefixes instead.
+In this case study, the \code{api-gateway-service} uses the Spring Cloud \footnote{\url{https://spring.io/projects/spring-cloud}} project to introduce a gateway \footnote{\url{https://spring.io/projects/spring-cloud-gateway}} in the application. The gateway is configured using the module's \code{application.yml} resource file, which Spring Boot \footnote{\url{https://spring.io/projects/spring-boot}} can access to set up all the routing logic supported by the application. From a performance perspective, an API gateway provides several benefits, such as options to set up request authentication, rate-limiting to prevent service over-use and DDoS attacks, monitoring and analytics endpoints (using Spring Boot Actuator), reducing latency by serving cached responses, as well as load balancing. A very simple gateway configuration example is shown below. The \code{lb://} prefix in \code{uri:} makes use of Spring Cloud Gateway's built-in load balancer, to provide round robin client-side load balancing features during calls to other microservices. A 503 Service Unavailable Error is returned when a service cannot be found, which is more appropriate than a basic Java exception stack trace shown when using \code{http://} or \code{https://} prefixes instead.
 
 \begin{lstlisting}[caption=Sample Spring Cloud Gateway configuration]
   spring:
@@ -96,6 +87,30 @@ Using the above environment variables, Spring Boot then sets the application pro
 
 \subsubsection{Database per Service}
 
+In monolithic applications, databases are shared across services, typically in a tiered approach (involving a web tier, services tier, cache tier and data tier). However, this leads to a large central database that becomes a single performance bottleneck for all data operations, and is considered an anti-pattern when used with microservice architecture. For the microservices in our system to be truly independent, their persistent data stores must also be loosely coupled. Each service must have ownership over its domain data and logic under an autonomous lifecycle. This is achieved using the \textit{database per service} design pattern.
+
+Database independence in microservices can possibly introduce additional concerns, as illustrated by the CAP theorem \footnote{\url{https://en.wikipedia.org/wiki/CAP_theorem}}, according to which a distributed data store can only provide two of the following: consistency, availability and partition tolerance (see also: choice between ACID and BASE transaction models \footnote{\url{https://www.geeksforgeeks.org/acid-model-vs-base-model-for-database/}}). In this project, MongoDB \footnote{\url{https://www.mongodb.com}}, a popular NoSQL database, is set up using Docker.
+
+\begin{lstlisting}[caption=Docker Compose file snippet for MongoDB server]
+  services:
+    mongodb:
+      image: mongo:latest
+      container_name: mongodb
+\end{lstlisting}
+
+Although only a single server is used in this project (serving at the default port - 27017), every microservice is configured to use a separate database. For instance, in the code listing below, \code{spring.data.mongodb.database} is set to \code{cinema-cineworld}, which creates and uses a separate database for Cineworld service, independent from other cinemas. When dealing with services with high throughput, multiple database servers may need to be provisioned, which can be achieved with Docker service scaling or using an orchestration tool like Kubernetes. The complications of a web application's integration with a persistent data store is made trivial with the help of the Spring Data MongoDB \footnote{\url{https://spring.io/projects/spring-data-mongodb}} project.
+
+\begin{lstlisting}[caption=Snippet from Cineworld cinema's application properties]
+  spring:
+    ...
+    data:
+      mongodb:
+        database: cinema-cineworld
+        host: $\dollar${DATABASE_HOST:mongodb}:$\dollar${DATABASE_PORT:27017}
+\end{lstlisting}
+
+Although all services use MongoDB in this project for the purpose of simplicity, the database per service design pattern allows every service to use a different kind of data store if the need arises, for instance, a service storing a lot of relational data could use MySQL, whereas another service storing network data might use a suitable graph database.
+
 \subsubsection{Service Instance per Container}
 
 As discussed in the project outline, Docker is used to containerise and deploy the microservices. The services have been built as a multi-module Maven project, each having an independent Dockerfile for deployment. Docker Compose \footnote{\url{https://docs.docker.com/compose/}} simplifies the process of defining and running multi-container Docker applications: running \code{docker-compose up} starts and runs the services defined in the Compose file, provided that each service has a valid Dockerfile.
@@ -106,9 +121,9 @@ As discussed in the project outline, Docker is used to containerise and deploy t
   docker-compose up
 \end{lstlisting}
 
-The wide range of benefits to containerising microservices make Docker the industry leading tool for service deployment. Developers are able to choose any suitable programming language and framework (including different versions), since Docker provides isolated environments with all required dependencies. The \textit{service instance per container} design pattern allows a microservice to be packaged as a Docker container image, permitting the deployment of multiple instances of the microservice as separate containers. 
+The wide range of benefits to containerising microservices make Docker the industry leading tool for service deployment. Developers are able to choose any suitable programming language and framework (including different versions), since Docker provides isolated environments with all required dependencies. The \textit{service instance per container} design pattern allows each microservice to be packaged as a Docker container image, permitting the deployment of multiple instances of the microservice as separate containers if required.
 
-There are far reaching performance benefits of this pattern, including service reproducibility, independent deployment and scaling, hardware resource (CPU/memory) constraining capabilities, service instance monitoring, reliability and fault tolerance. Most importantly, Docker containers are much faster than traditional virtual machines (VMs) thanks to lightweight architecture (sharing the host OS kernel instead of requiring a complete OS or hypervisor). In large scale projects, container orchestration tools such as Kubernetes \footnote{\url{https://kubernetes.io}}, Marathon (Mesos) \footnote{\url{https://mesosphere.github.io/marathon/}}, Amazon ECS \footnote{\url{https://aws.amazon.com/ecs/}} and EKS \footnote{\url{https://aws.amazon.com/eks/}} are widely used to automate the operational effort required to manage containerised microservices, which is key for well-run DevOps.
+There are far reaching performance benefits of this pattern, including service reproducibility, independent deployment and scaling, hardware resource (CPU/memory) constraining capabilities, service instance monitoring, reliability and fault tolerance. Most importantly, Docker containers are much faster than traditional virtual machines (VMs) thanks to lightweight architecture (sharing the host OS kernel instead of requiring a complete OS or hypervisor). In large scale projects, container orchestration tools such as Kubernetes \footnote{\url{https://kubernetes.io}}, Marathon (  ) \footnote{\url{https://mesosphere.github.io/marathon/}}, Amazon ECS \footnote{\url{https://aws.amazon.com/ecs/}} and EKS \footnote{\url{https://aws.amazon.com/eks/}} are widely used to automate the operational effort required to manage containerised microservices, which is key for well-run DevOps.
 
 The three cinema microservices have identical Dockerfiles, as shown below. Each of them use a JDK 11 base image, copy the compiled JAR file into the container, then run it after a 5 second wait. Using Docker Compose, each service's Dockerfile is used to start the application.
 
