@@ -25,7 +25,7 @@ A minor variation of the API gateway pattern is called \textit{backends for fron
 
 Despite its popularity and usefulness, the API gateway pattern brings with it a few issues that should be taken into consideration. For instance, it could become a bottleneck or single point of failure, if resiliency and fault tolerance measures are not put in place. Performance testing methods such as load testing should be explored to prevent failure scenarios.
 
-In this case study, the \code{api-gateway-service} uses the Spring Cloud project to introduce a gateway in the application. 
+In this case study, the \code{api-gateway-service} uses the Spring Cloud project to introduce a gateway in the application.
 
 \begin{lstlisting}[language=XML, caption=Maven dependency for Spring Cloud Gateway]
   <dependency>
@@ -34,7 +34,7 @@ In this case study, the \code{api-gateway-service} uses the Spring Cloud project
   </dependency>
 \end{lstlisting}
 
-The gateway is configured using the module's \code{application.yml} resource file, which Spring Boot can access to set up all the routing logic supported by the application. From a performance perspective, an API gateway provides several benefits, such as options to set up request authentication, rate-limiting to prevent service over-use and DDoS attacks, monitoring and analytics endpoints (using Spring Boot Actuator), reducing latency by serving cached responses, as well as load balancing. A very simple gateway configuration example is shown below. The \code{lb://} prefix in \code{uri:} makes use of Spring Cloud Gateway's built-in load balancer, to provide round robin client-side load balancing features during calls to other microservices. A 503 Service Unavailable Error is returned when a service cannot be found, which is more appropriate than a basic Java exception stack trace shown when using \code{http://} or \code{https://} prefixes instead. 
+The gateway is configured using the module's \code{application.yml} resource file, which Spring Boot can access to set up all the routing logic supported by the application. From a performance perspective, an API gateway provides several benefits, such as options to set up request authentication, rate-limiting to prevent service over-use and DDoS attacks, monitoring and analytics endpoints (using Spring Boot Actuator), reducing latency by serving cached responses, as well as load balancing. A very simple gateway configuration example is shown below. The \code{lb://} prefix in \code{uri:} makes use of Spring Cloud Gateway's built-in load balancer, to provide round robin client-side load balancing features during calls to other microservices. A 503 Service Unavailable Error is returned when a service cannot be found, which is more appropriate than a basic Java exception stack trace shown when using \code{http://} or \code{https://} prefixes instead.
 
 \begin{lstlisting}[caption=Sample Spring Cloud Gateway configuration]
   spring:
@@ -55,8 +55,47 @@ Spring Cloud Gateway paves the way for discussion on the next two design pattern
 \subsubsection{Client-side Service Discovery}
 
 \subsubsection{Aggregator}
+
 \subsubsection{Externalised Configuration}
+
+Externalised configuration is a cross-cutting concerns design pattern, that is especially useful in separating changeable application properties from the business logic. Spring Boot has built-in support for processing external configuration from various sources, such as Java properties files, YAML files, environment variables, and command-line arguments. The values set by the developer for such properties are injected into Spring beans \footnote{\url{https://www.baeldung.com/spring-bean}} using the \code{@Value} annotation (among other alternatives).
+
+Shown below are the environment variable settings for Cineworld's cinema service in the first case study's Docker Compose file.
+\begin{lstlisting}[caption=Snippet from \code{docker-compose.yml}]
+  cinema-cineworld-service:
+    ...
+    environment:
+      - SERVER_PORT=8082
+      - EUREKA_SERVER=eureka-server
+      - DATABASE_HOST=mongodb
+      - DATABASE_PORT=27017
+    ...
+\end{lstlisting}
+
+Using the above environment variables, Spring Boot then sets the application properties. Externalising configuration also allows the development team to maintain all properties in one place (say the Docker Compose file) such that any required changes will only need to be made in that file, instead of searching for every occurrence of the property in the application source code.
+
+\begin{lstlisting}[caption=Snippet from \code{cinema-cineworld-service} \code{application.yml} file]
+  server:
+    servlet:
+      context-path: /cinema/cineworld
+    port: $\dollar${SERVER_PORT}
+  spring:
+    application:
+      name: cinema-cineworld-service
+    data:
+      mongodb:
+        database: cinema-cineworld
+        host: $\dollar${DATABASE_HOST:mongodb}:$\dollar${DATABASE_PORT:27017}
+  eureka:
+    ...
+    client:
+      ...
+      serviceUrl:
+        defaultZone: http://$\dollar${EUREKA_SERVER:eureka-server}:$\dollar${EUREKA_PORT:8761}/eureka/
+\end{lstlisting}
+
 \subsubsection{Database per Service}
+
 \subsubsection{Service Instance per Container}
 
 The services have been built as a multi-module Maven project, each having an independent Dockerfile for deployment.
