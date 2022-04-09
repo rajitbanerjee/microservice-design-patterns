@@ -98,7 +98,25 @@ Using the above environment variables, Spring Boot then sets the application pro
 
 \subsubsection{Service Instance per Container}
 
-The services have been built as a multi-module Maven project, each having an independent Dockerfile for deployment.
+As discussed in the project outline, Docker is used to containerise and deploy the microservices. The services have been built as a multi-module Maven project, each having an independent Dockerfile for deployment. Docker Compose \footnote{\url{https://docs.docker.com/compose/}} simplifies the process of defining and running multi-container Docker applications: running \code{docker-compose up} starts and runs the services defined in the Compose file, provided that each service has a valid Dockerfile.
+
+\begin{lstlisting}[caption=Sample Docker Compose commands to start the microservices]
+  docker-compose down --remove-orphans
+  docker-compose build --no-cache
+  docker-compose up
+\end{lstlisting}
+
+The wide range of benefits to containerising microservices make Docker the industry leading tool for service deployment. Developers are able to choose any suitable programming language and framework (including different versions), since Docker provides isolated environments with all required dependencies. The \textit{service instance per container} design pattern allows a microservice to be packaged as a Docker container image, permitting the deployment of multiple instances of the microservice as separate containers. 
+
+There are far reaching performance benefits of this pattern, including service reproducibility, independent deployment and scaling, hardware resource (CPU/memory) constraining capabilities, service instance monitoring, reliability and fault tolerance. Most importantly, Docker containers are much faster than traditional virtual machines (VMs) thanks to lightweight architecture (sharing the host OS kernel instead of requiring a complete OS or hypervisor). In large scale projects, container orchestration tools such as Kubernetes \footnote{\url{https://kubernetes.io}}, Marathon (Mesos) \footnote{\url{https://mesosphere.github.io/marathon/}}, Amazon ECS \footnote{\url{https://aws.amazon.com/ecs/}} and EKS \footnote{\url{https://aws.amazon.com/eks/}} are widely used to automate the operational effort required to manage containerised microservices, which is key for well-run DevOps.
+
+The three cinema microservices have identical Dockerfiles, as shown below. Each of them use a JDK 11 base image, copy the compiled JAR file into the container, then run it after a 5 second wait. Using Docker Compose, each service's Dockerfile is used to start the application.
+
+\begin{lstlisting}[caption=Dockerfile for cinema services]
+  FROM openjdk:11-jre-slim
+  COPY target/cinema*.jar /cinema.jar
+  CMD sleep 5 && java -jar /cinema.jar
+\end{lstlisting}
 
 
 \subsection{Evaluation}
