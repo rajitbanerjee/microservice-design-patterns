@@ -24,6 +24,7 @@
 \newcommand{\subtitle}[1]{\textsf{\textbf{\Large{#1}}}}
 \newcommand{\abstractheading}[1]{\textsf{\textbf{\Large{#1}}}}
 \newcommand{\code}[1]{\texttt{\footnotesize{#1}}}
+\newcommand*{\captionsource}[1]{Source: #1}
 
 \renewcommand{\section}{\@startsection
 {section}%                        % the name
