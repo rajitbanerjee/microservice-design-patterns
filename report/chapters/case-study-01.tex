@@ -11,7 +11,7 @@ The pilot case study implements the movie ticket reservation system prototype de
   \label{fig:cs01-arch}
 \end{figure}
 
-The architecture diagram above (Fig. \ref{fig:cs01-arch}) depicts the organisation of the microservices involved: an API gateway service to act as an interface between clients and other services, and aggregator service to gather results, and three independent cinema services - Cineworld, Dundrum and UCD. The following microservice design patterns have been employed while developing this web application:
+The architecture diagram above (Fig. \ref{fig:cs01-arch}) depicts the organisation of the microservices involved: an API gateway service to act as an interface between clients and other services, and aggregator service to gather results, a central service registry, and three independent cinema services - Cineworld, Dundrum and UCD. The following microservice design patterns have been employed while developing this web application:
 
 \subsubsection{API Gateway}
 
@@ -44,6 +44,30 @@ Spring Cloud Gateway paves the way for discussion on the next two design pattern
 \subsubsection{Circuit Breaker}
 
 \subsubsection{Client-side Service Discovery}
+
+\textit{Service discovery} is an essential design pattern for modern microservices, where the network location (host name/IP address and port number) may be dynamic due to the industry dominance of virtualisation and containerisation solutions to run microservice-based applications. Hard-coding the locations of services is then considered an anti-pattern, since it necessitates changes in multiple places when services are scaled up or down. Hence, a natural solution is to set up a service registry, which maintains the locations of all active services, and provides access to registered services through logical addresses. 
+
+Fig. \ref{fig:cs01-arch} shows the service registry, which is implemented using Spring Cloud Netflix (Eureka) \footnote{\url{https://spring.io/projects/spring-cloud-netflix}}. The server and client Maven dependencies are \code{spring-cloud-starter-netflix-eureka-server} and \code{spring-cloud-starter-netflix-eureka-client} respectively. The \code{eureka-server} service uses an \code{@EnableEurekaServer} annotation in its main application class to denote its server status (maintaining the service registry), and every other microservice uses a corresponding \code{@EnableEurekaClient} annotation (to self-register with the Eureka server on application startup). The server and sample client Configuration are shown in the following listings:
+
+\begin{lstlisting}[caption=Snippet from Eureka server's application properties]
+  eureka:
+    client:
+      register-with-eureka: false
+      fetch-registry: false
+\end{lstlisting}
+
+The server is prevented from trying to register itself. For the sample client configuration, the Spring Boot application attempts to contact the Eureka server on \code{code.client.serviceUrl.defaultZone}, which is specified in \code{docker-compose.yml}. Eureka clients also send regular heartbeat messages to the server (set using \code{lease-renewal-interval-in-seconds}) to maintain their active status. Once the server stops receiving heartbeats below an expected threshold, it starts evicting the instances from the registry; this is known as self-preservation. 
+
+\begin{lstlisting}[caption=Snippet from a Eureka client's application properties]
+  eureka:
+    instance:
+      lease-renewal-interval-in-seconds: 5
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      serviceUrl:
+        defaultZone: http://$\dollar${EUREKA_SERVER:eureka-server}:$\dollar${EUREKA_PORT:8761}/eureka/
+\end{lstlisting}
 
 \subsubsection{Aggregator}
 
