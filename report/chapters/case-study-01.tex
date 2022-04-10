@@ -38,7 +38,7 @@ In this case study, the \code{api-gateway-service} uses the Spring Cloud \footno
           - Path=/service/**
 \end{lstlisting}
 
-Spring Cloud Gateway paves the way for discussion on the next two design patterns: \textit{circuit breaker} and \textit{client-side service discovery}, thanks to the integrations available to simplify configuration and maintenance.
+Spring Cloud Gateway paves the way for discussion on the next two design patterns: \textit{circuit breaker} and \textit{client-side service discovery}, thanks to the Spring integrations available to simplify configuration and maintenance.
 
 
 \subsubsection{Circuit Breaker}
@@ -46,6 +46,23 @@ Spring Cloud Gateway paves the way for discussion on the next two design pattern
 \subsubsection{Client-side Service Discovery}
 
 \subsubsection{Aggregator}
+
+The service \textit{aggregator} design pattern for microservices is useful when similar calls need to made to multiple microservices. On receiving a request from the client via an API gateway, the aggregator service dispatches the request to appropriate internal backend microservices, then combines the responses into a single structure, which is returned to the requester. The aggregator itself doesn't need to know the routing details of internal services, since it can communicate with them through the API gateway again. The performance benefit of this pattern is the reduction in communication overhead and chattiness between the client and the various internal cinema microservices. 
+
+Moreover, in this case study, the aggregator service relies on the service discovery pattern to find the registered cinema services at any given time. The code snippet from \code{aggregator-service} below illustrates how a custom discovery service function is used to fetch the addresses of all active cinemas, which the aggregator can use to send identical GET or POST requests to (received from client via the gateway). The primary advantage of this design choice is the fact that the aggregator does not need to be made aware when the number of cinema services changes, as long as the necessary registration process is completed with the Eureka server.
+
+\begin{lstlisting}[language=Java, caption=Snippet from \code{AggregatorService.java}]
+  for (String serviceUrl : discoveryService.getCinemaUrlPrefixes()) {
+      String url = apiGatewayHost + serviceUrl + endpoint;
+      if (httpMethod.matches("GET")) {
+          results.add(restClient.getForObject(url, type));
+      } else if (httpMethod.matches("POST")) {
+          results.add(restClient.postForObject(url, body, type));
+      }
+  }
+\end{lstlisting}
+
+In the given movie ticket reservation system, the function of the aggregator is to gather the list of movie showtimes from every registered cinema, and return a compiled list to the client.
 
 \subsubsection{Externalised Configuration}
 
