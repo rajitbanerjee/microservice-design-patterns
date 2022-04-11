@@ -5,6 +5,7 @@
 \renewcommand{\baselinestretch}{1.2}
 \parskip=1em
 \usepackage{float}
+\usepackage{anyfontsize} 
 
 \renewcommand{\familydefault}{\sfdefault}
 \renewcommand{\contentsname}{Table of Contents}
