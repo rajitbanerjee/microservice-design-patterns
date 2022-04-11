@@ -3,6 +3,8 @@ server:
     context-path: /cinema/ucd
   port: ${SERVER_PORT}
 
+data_file: data/movies.json
+
 spring:
   application:
     name: cinema-ucd-service

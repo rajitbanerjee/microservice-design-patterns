@@ -8,13 +8,10 @@
   <modules>
     <module>core</module>
     <module>eureka-server</module>
-
     <module>api-gateway-service</module>
     <module>aggregator-service</module>
     <module>cinema-cineworld-service</module>
     <module>cinema-dundrum-service</module>
     <module>cinema-ucd-service</module>
-
-    <module>cli-client</module>
   </modules>
 </project>

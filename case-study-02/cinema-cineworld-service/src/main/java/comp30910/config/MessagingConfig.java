@@ -41,14 +41,14 @@ public class MessagingConfig {
 
     @Bean
     @Qualifier("requestBinding")
-    public Binding requestBinding(TopicExchange exchange) {
-        return BindingBuilder.bind(requestQueue()).to(exchange).with(requestRoutingKey);
+    public Binding requestBinding() {
+        return BindingBuilder.bind(requestQueue()).to(exchange()).with(requestRoutingKey);
     }
 
     @Bean
     @Qualifier("serviceOnlyRequestBinding")
-    public Binding serviceOnlyRequestBinding(TopicExchange exchange) {
-        return BindingBuilder.bind(requestQueue()).to(exchange).with(serviceOnlyRequestRoutingKey);
+    public Binding serviceOnlyRequestBinding() {
+        return BindingBuilder.bind(requestQueue()).to(exchange()).with(serviceOnlyRequestRoutingKey);
     }
 
     @Bean

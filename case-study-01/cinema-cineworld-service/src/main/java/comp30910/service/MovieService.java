@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MovieService {
     private final MovieRepository movieRepository;
-    private static final String DATA_FILE = "data/movies.json";
+
+    @Value("${data_file}")
+    private String dataFile;
 
     public List<Movie> findAll() {
         return movieRepository.findAll();
@@ -40,7 +42,7 @@ public class MovieService {
     public void initDatabase() {
         List<Movie> movies = new ArrayList<>();
         try {
-            String jsonString = FileIO.readFileAsString(DATA_FILE);
+            String jsonString = FileIO.readFileAsString(dataFile);
             TypeLiteral<List<Movie>> type = new TypeLiteral<>() {};
             movies = JsonIterator.deserialize(jsonString, type);
         } catch (IOException e) {

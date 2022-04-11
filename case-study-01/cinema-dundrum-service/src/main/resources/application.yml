@@ -3,6 +3,8 @@ server:
     context-path: /cinema/dundrum
   port: ${SERVER_PORT}
 
+data_file: data/movies.json
+
 spring:
   application:
     name: cinema-dundrum-service
