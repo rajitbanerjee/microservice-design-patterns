@@ -1,3 +1,6 @@
 .DS_STORE
 .vscode/
 .ipynb_checkpoints/
+
+report/*.bcf
+report/*.run.xml

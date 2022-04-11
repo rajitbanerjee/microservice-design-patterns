@@ -14,13 +14,40 @@
 
 % code blocks
 \usepackage{listings} 
-\lstset{
-    mathescape=true,
-    basicstyle = \ttfamily
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,    
+    keepspaces=true,    
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
 }
+\lstset{
+  mathescape = true,
+  basicstyle = \ttfamily,
+  style = mystyle
+}
+\newcommand{\dollar}{\mbox{\textdollar}}
 
 % Bibliography settings
 \usepackage[british]{babel}
+\usepackage{csquotes}
 \usepackage[backend=biber,style=ieee,urldate=long,dashed=false]{biblatex}
 \addbibresource{./assets/tex/bibliography.bib}
 \usepackage{xpatch}
@@ -47,34 +74,29 @@
 %%%%%%%%
 \tableofcontents
 
-%%%%%%%%%
-%\input{./chapters/abstract.tex}
+%%%%%%%%
+\input{./chapters/abstract.tex}
 
 %%%%%%%%
 \input{./chapters/specification.tex}
 
-%%%%%%%%%
-%\input{./chapters/introduction.tex}
+%%%%%%%%
+\input{./chapters/introduction.tex}
 
 %%%%%%%%
 \input{./chapters/related-work.tex}
 
-%%%%%%%%%
-%\input{./chapters/outline.tex}
+%%%%%%%%
+\input{./chapters/outline.tex}
 
-%%%%%%%% Other possible chapter ideas (not necessarily all)
-% Options for core:
-% \input{./chapters/design-and-implementation.tex}
-% \input{./chapters/core-contribution.tex}
-% \input{./chapters/case-studies.tex}
+%%%%%%%% 
+\input{./chapters/case-studies.tex}
 
-% \input{./chapters/evaluation.tex} <- required?
+%%%%%%%%
+\input{./chapters/conclusions.tex}
 
-%%%%%%%%%
-%\input{./chapters/summary.tex}
-
-%%%%%%%%%
-%\input{./chapters/acknowledgements.tex}
+%%%%%%%%
+\input{./chapters/acknowledgements.tex}
 
 %%%%%%%%
 \printbibliography

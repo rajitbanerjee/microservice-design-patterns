@@ -1,25 +1,20 @@
 \chapter{Project Specification}
 
 \section{Problem Statement}
-Microservice architecture is a style of designing software systems to be highly maintainable, scalable, loosely-coupled and independently deployable. Moreover, each service is built to be self-contained and implement a single business capability. Design patterns in software engineering refer to any general, repeatable or reusable solution to recurring problems faced during the software design process. The aim of this project is to analyse the performance of a number of microservice design patterns (based on metrics such as query response time, CPU/RAM usage, cost of hosting and packet loss rate), and evaluate their benefits and shortcomings depending on the business requirement and use case. A non-exhaustive list of design patterns that could be explored is as follows:
+Microservice architecture is a style of designing software systems to be highly maintainable, scalable, loosely-coupled and independently deployable. Moreover, each service is built to be self-contained and implement a single business capability. Design patterns in software engineering refer to any general, repeatable or reusable solution to recurring problems faced during the software design process. The aim of this project is to study the performance engineering practices associated with a number of \textit{microservice design patterns}, considering both qualitative and quantitative metrics to evaluate their benefits and shortcomings depending on the business requirement and use case. A non-exhaustive list of design patterns that could be explored is as follows:
 
 \begin{itemize}
 	\item API Gateway
-	\item Chain of Responsibility
 	\item Asynchronous Messaging
+	\item Chain of Responsibility
 	\item Database or Shared Data
-	\item Event Sourcing
-	\item Command Query Responsibility Segregation (CQRS)
-	\item Saga
 	\item Circuit Breaker
-	\item Strangler (Decomposition)
-	\item Consumer-Driver Contract Test
 	\item Externalise Configuration
 	\item Aggregator
 	\item Branch
 \end{itemize}
 
-For the aforementioned design patterns, sufficiently complex simulations will be designed for the performance engineering experiments. The project will also look at some common issues in microservices, and how they compare with traditional monolithic architectures.
+Employing some of the aforementioned design patterns, sufficiently complex simulations will be designed for the performance engineering experiments. The project will also look at some common issues in microservices, and how they compare with traditional monolithic architectures.
 
 \pagebreak
 \section{Background}
@@ -32,11 +27,10 @@ Due to their popularity, microservices have been written about extensively in bo
 Any data that is to be used or analysed in this project will be generated during the course of experiments. There are no dependencies on additional datasets.
 
 \section{Resources Required}
-
 A non-exhaustive list of resources is specified below, following preliminary needs assessment.
 
 \begin{itemize}
-	\item Languages/Frameworks: Node.js + Express.js, React.js
+	\item Languages/Frameworks: Java, Spring Boot, React.js
 	\item Tools: Git, Docker, Apache JMeter
 	\item Database: MongoDB
 	\item Compute: Linux server maintained by the UCD School of Computer Science

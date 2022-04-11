@@ -1,9 +1,10 @@
-\ProvidesClass{report-template}
+\ProvidesClass{./assets/tex/report-template}
 \LoadClass[11pt, titlepage]{report}
 \usepackage[paperwidth=21cm,paperheight=29.7cm,includehead,headheight=1.5cm,pdftex,hmargin={3cm,2.5cm},vmargin={0cm,2cm},]{geometry} 
 \setlength{\parindent}{0cm} 
 \renewcommand{\baselinestretch}{1.2}
 \parskip=1em
+\usepackage{float}
 
 \renewcommand{\familydefault}{\sfdefault}
 \renewcommand{\contentsname}{Table of Contents}
@@ -23,6 +24,7 @@
 \newcommand{\subtitle}[1]{\textsf{\textbf{\Large{#1}}}}
 \newcommand{\abstractheading}[1]{\textsf{\textbf{\Large{#1}}}}
 \newcommand{\code}[1]{\texttt{\footnotesize{#1}}}
+\newcommand*{\captionsource}[1]{Source: #1}
 
 \renewcommand{\section}{\@startsection
 {section}%                        % the name
@@ -38,7 +40,7 @@
 {0mm}%                            % the indent
 {6.4mm}%                          % the beforeskip
 {1.1mm}%                          % the afterskip
-{\Large\bfseries\sffamily}}       % the style
+{\large\bfseries\sffamily}}       % the style
 
 \renewcommand{\subsubsection}{\@startsection
 {subsubsection}%                  % the name
@@ -99,7 +101,7 @@
 \author{\Large \studentname}\\[0.5cm]\rule{4cm}{1pt}\\[0.5cm]
 \textsf{\Large Student ID: \studentid}\\[0.5cm]\rule{4cm}{1pt}\\[0.5cm]
 \textsf{\Large  A thesis submitted in part fulfilment of the degree of\\[0.5cm]
-\textbf{BSc. (Hons.) in Computer Science with Data Science}}\\[0.5cm]
+\textbf{BSc. (Hons.) in Computer Science}}\\[0.5cm]
 \textsf{\Large  \textbf{Supervisor:}  \supervisorname}\\[1.5cm]
 \includegraphics[height=5.5cm]{./assets/images/ucd-logo.pdf}\\[1cm]
 \textsf{\Large UCD School of Computer Science\\
