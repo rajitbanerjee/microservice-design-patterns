@@ -11,7 +11,7 @@
 
 ### Contents
 
-- [Report](./report/final-report.pdf)
+- [Report](./report/project-report.pdf)
 - [Case Study 1](./case-study-01/)
 - [Case Study 2](./case-study-02/)
 
