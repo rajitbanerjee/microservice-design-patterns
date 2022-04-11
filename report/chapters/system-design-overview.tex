@@ -1,6 +1,6 @@
-\chapter{Outline of Approach}
+\chapter{System Design Overview}
 
-\section{System Overview}
+\section{Prototype}
 
 In order to demonstrate various performance engineering practices in the context of microservice design patterns, we look at a simple movie ticket reservation system, consisting of 3 independent cinemas (Cineworld \footnote{\url{https://www.cineworld.ie/}}, Dundrum \footnote{\url{https://www.movies-at.ie/movies/}} and UCD \footnote{\url{https://www.ucd.ie/studentcentre/cinema/}}), as well as an intermediary (or broker) between clients and the cinema services. Each cinema has its own catalogue of movies (with an ID, name, and available showtimes). The client's primary objective would be to request the intermediary to fetch a list of movies from every active cinema, then display aggregated results. Next, the client selects a movie and showtime (along with other booking details) to make a reservation at a specific cinema. It is also possible to list the reservations made at a given cinema (useful for staff and administrators). The intermediary serves as a router for client requests to the cinema services, and in some cases, an aggregator of results.
 
