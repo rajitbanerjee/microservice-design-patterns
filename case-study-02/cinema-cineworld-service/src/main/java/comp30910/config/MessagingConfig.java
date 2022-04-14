@@ -48,7 +48,9 @@ public class MessagingConfig {
     @Bean
     @Qualifier("serviceOnlyRequestBinding")
     public Binding serviceOnlyRequestBinding() {
-        return BindingBuilder.bind(requestQueue()).to(exchange()).with(serviceOnlyRequestRoutingKey);
+        return BindingBuilder.bind(requestQueue())
+                .to(exchange())
+                .with(serviceOnlyRequestRoutingKey);
     }
 
     @Bean

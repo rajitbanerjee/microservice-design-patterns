@@ -1,1 +1,1 @@
-GET http://localhost:8099/api/movie/list
+GET http://localhost:8099/api/movie/list/7397a9ae-f8c2-4de7-936e-7b7710029c90

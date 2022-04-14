@@ -35,8 +35,8 @@ public class MessagingConfig {
 
     @Bean
     @Qualifier("responseBinding")
-    public Binding responseBinding(TopicExchange exchange) {
-        return BindingBuilder.bind(responseQueue()).to(exchange).with(responseRoutingKey);
+    public Binding responseBinding() {
+        return BindingBuilder.bind(responseQueue()).to(exchange()).with(responseRoutingKey);
     }
 
     @Bean

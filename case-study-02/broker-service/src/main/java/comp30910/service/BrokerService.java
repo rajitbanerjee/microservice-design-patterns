@@ -22,16 +22,8 @@ public class BrokerService {
     private final Map<String, List<Message>> cache;
     private final TopicExchange exchange;
 
-    public List<Message> processRequest(RequestMessage requestMessage, String routingKey)
-            throws InterruptedException {
+    public String sendRequest(RequestMessage requestMessage, String routingKey) {
         String correlationId = UUID.randomUUID().toString();
-        sendRequest(requestMessage, correlationId, routingKey);
-        Thread.sleep(500); // Intentional delay
-        return cache.get(correlationId);
-    }
-
-    private void sendRequest(
-            RequestMessage requestMessage, String correlationId, String routingKey) {
         MessagePostProcessor messagePostProcessor =
                 message -> {
                     MessageProperties messageProperties = message.getMessageProperties();
@@ -41,6 +33,11 @@ public class BrokerService {
         rabbitTemplate.setMessageConverter(new SerializerMessageConverter());
         rabbitTemplate.convertAndSend(
                 exchange.getName(), routingKey, requestMessage, messagePostProcessor);
+        return correlationId;
+    }
+
+    public List<Message> fetchResponseFromCache(String correlationId) {
+        return cache.get(correlationId);
     }
 
     @RabbitListener(queues = "#{responseQueue.name}")
