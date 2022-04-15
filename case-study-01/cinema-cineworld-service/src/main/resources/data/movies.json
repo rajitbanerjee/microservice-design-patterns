@@ -1,12 +1,17 @@
 [
   {
-    "id": "movie005",
-    "name": "The King's Man",
-    "showTimes": ["11:00", "14:00", "17:00"]
+    "id": "CNW001",
+    "name": "The Shawshank Redemption",
+    "showTimes": ["10:00", "14:00", "18:00"]
   },
   {
-    "id": "movie006",
+    "id": "CNW002",
     "name": "The Godfather",
-    "showTimes": ["20:00"]
+    "showTimes": ["11:00", "15:00", "19:00"]
+  },
+  {
+    "id": "CNW003",
+    "name": "The Dark Knight",
+    "showTimes": ["12:00", "16:00", "20:00"]
   }
 ]

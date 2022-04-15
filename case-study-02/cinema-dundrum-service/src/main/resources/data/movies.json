@@ -1,12 +1,17 @@
 [
   {
-    "id": "movie003",
-    "name": "The King's Man",
-    "showTimes": ["11:00", "14:00", "17:00"]
+    "id": "MAD001",
+    "name": "The Godfather: Part II",
+    "showTimes": ["10:00", "14:00", "18:00"]
   },
   {
-    "id": "movie004",
-    "name": "The Godfather",
-    "showTimes": ["20:00"]
+    "id": "MAD002",
+    "name": "12 Angry Men",
+    "showTimes": ["11:00", "15:00", "19:00"]
+  },
+  {
+    "id": "MAD003",
+    "name": "Schindler's List",
+    "showTimes": ["12:00", "16:00", "20:00"]
   }
 ]

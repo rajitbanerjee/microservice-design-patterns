@@ -4,9 +4,9 @@ Content-Type: application/json
 {
     "clientName": "Jane Doe",
     "clientEmail": "jane.doe@ucd.ie",
-    "movieId": "movie001",
-    "date": "2022-03-17",
-    "showTime": "17:00",
+    "movieId": "CNW001",
+    "date": "2022-04-15",
+    "showTime": "18:00",
     "tickets": 2,
     "ticketType": "Gold",
     "amount": 30.00

@@ -1,12 +1,17 @@
 [
   {
-    "id": "movie001",
-    "name": "The King's Man",
-    "showTimes": ["11:00", "14:00", "17:00"]
+    "id": "UCD001",
+    "name": "The Lord of the Rings: The Return of the King",
+    "showTimes": ["10:00", "14:00", "18:00"]
   },
   {
-    "id": "movie002",
-    "name": "The Godfather",
-    "showTimes": ["20:00"]
+    "id": "UCD002",
+    "name": "Pulp Fiction",
+    "showTimes": ["11:00", "15:00", "19:00"]
+  },
+  {
+    "id": "UCD003",
+    "name": "The Lord of the Rings: The Fellowship of the Ring",
+    "showTimes": ["12:00", "16:00", "20:00"]
   }
 ]
