@@ -6,6 +6,7 @@ import comp30910.model.MovieRequest;
 import comp30910.service.MovieService;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class MovieController {
 
     @GetMapping("/list")
     public Cinema list() {
-        String id = Integer.valueOf(serviceName.hashCode()).toString();
+        String id = UUID.nameUUIDFromBytes(serviceName.getBytes()).toString();
         String cinemaName =
                 serviceName.replaceFirst(SERVICE_PREFIX, "").replaceFirst(SERVICE_SUFFIX, "");
         List<Movie> movies = movieService.findAll();

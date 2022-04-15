@@ -7,6 +7,7 @@ import comp30910.model.Reservation;
 import comp30910.service.MovieService;
 import comp30910.service.ReservationService;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -75,7 +76,7 @@ public class Controller {
 
     // Movie ---
     public Cinema listMovies() {
-        String id = Integer.valueOf(serviceName.hashCode()).toString();
+        String id = UUID.nameUUIDFromBytes(serviceName.getBytes()).toString();
         String cinemaName =
                 serviceName.replaceFirst(SERVICE_PREFIX, "").replaceFirst(SERVICE_SUFFIX, "");
         List<Movie> movies = movieService.findAll();

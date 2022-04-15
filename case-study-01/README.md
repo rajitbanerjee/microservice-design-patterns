@@ -9,3 +9,7 @@ The first case study showcasing a web app built (movie ticket reservation system
 ```
 
 - For local testing of the backend API, run the requests in `.http` files under `./api-gateway-service/src/main/resources/http/*`.
+
+- The following ports on the host machine need to be free:
+  - 8099 (API gateway)
+  - 8761 (Eureka server)
