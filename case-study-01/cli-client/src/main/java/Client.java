@@ -89,11 +89,11 @@ public class Client {
                             tickets,
                             ticketType,
                             amount);
-            String reservationMakeUrl =
+            String makeReservationUrl =
                     String.format("%s/cinema/%s/reservation/make", HOST, cinemaName);
             TypeLiteral<Reservation> reservationType = new TypeLiteral<>() {};
             Reservation reservation =
-                    restClient.postForObject(reservationMakeUrl, body, reservationType);
+                    restClient.postForObject(makeReservationUrl, body, reservationType);
 
             System.out.println(reservation);
         } catch (Exception e) {

@@ -1,1 +1,1 @@
-GET http://localhost:8099/api/cinema/cineworld/reservation/make/796650f2-9d57-480b-bd84-e8f58e043cd2
+GET http://localhost:8099/api/cinema/cineworld/reservation/make

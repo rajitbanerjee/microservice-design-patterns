@@ -24,7 +24,7 @@ public class MovieController {
     private String requestRoutingKey;
 
     @GetMapping("/list")
-    public String movieList() {
+    public String listMovies() {
         String endpoint = "/movie/list";
         String routingKey = requestRoutingKey;
         String correlationId =
@@ -33,7 +33,7 @@ public class MovieController {
     }
 
     @GetMapping("/list/{correlationId}")
-    public List<Cinema> movieListResponse(@PathVariable String correlationId) {
+    public List<Cinema> listMoviesResponse(@PathVariable String correlationId) {
         List<Message> responses = brokerService.fetchResponseFromCache(correlationId);
         return responses.stream()
                 .map(r -> (Cinema) SerializationUtils.deserialize(r.getBody()))

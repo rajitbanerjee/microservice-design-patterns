@@ -26,7 +26,7 @@ public class Controller {
     private static final String SERVICE_SUFFIX = "-service";
 
     private final MovieService movieService;
-    private final ReservationService reservationsService;
+    private final ReservationService reservationService;
 
     private final RabbitTemplate rabbitTemplate;
     private final TopicExchange exchange;
@@ -54,22 +54,27 @@ public class Controller {
 
         Object response = null;
         switch (request.getEndpoint()) {
-                // Movie
+                // Movie ---
             case "/movie/list":
-                response = list();
+                response = listMovies();
                 break;
 
-                // Reservation
+                // Reservation ---
             case "/reservation/make":
                 Reservation reservation = (Reservation) request.getBody();
-                response = make(reservation);
+                response = makeReservation(reservation);
+                break;
+
+            case "/reservation/list":
+                response = listReservations();
                 break;
         }
         rabbitTemplate.convertAndSend(
                 exchange.getName(), responseRoutingKey, response, messagePostProcessor);
     }
 
-    public Cinema list() {
+    // Movie ---
+    public Cinema listMovies() {
         String id = Integer.valueOf(serviceName.hashCode()).toString();
         String cinemaName =
                 serviceName.replaceFirst(SERVICE_PREFIX, "").replaceFirst(SERVICE_SUFFIX, "");
@@ -77,7 +82,12 @@ public class Controller {
         return new Cinema(id, cinemaName, movies);
     }
 
-    public Reservation make(Reservation reservation) {
-        return reservationsService.makeReservation(reservation);
+    // Reservation --
+    public Reservation makeReservation(Reservation reservation) {
+        return reservationService.makeReservation(reservation);
+    }
+
+    public List<Reservation> listReservations() {
+        return reservationService.findAll();
     }
 }

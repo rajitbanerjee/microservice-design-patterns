@@ -18,21 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/reservation")
 public class ReservationController {
-    private final ReservationService reservationsService;
+    private final ReservationService reservationService;
 
     @PostMapping("/make")
     @ResponseStatus(HttpStatus.CREATED)
     public Reservation make(@RequestBody Reservation reservation) {
-        return reservationsService.makeReservation(reservation);
+        return reservationService.makeReservation(reservation);
     }
 
     @GetMapping("/list")
     public List<Reservation> list() {
-        return reservationsService.findAll();
+        return reservationService.findAll();
     }
 
     @GetMapping("/delay/{seconds}")
     public Map<String, ?> delay(@PathVariable int seconds) throws InterruptedException {
-        return reservationsService.delay(seconds);
+        return reservationService.delay(seconds);
     }
 }
