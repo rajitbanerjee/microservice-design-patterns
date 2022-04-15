@@ -1,4 +1,9 @@
 version: "3"
+
+volumes:
+  rabbitmq-prometheus_prometheus:
+  rabbitmq-prometheus_grafana:
+
 services:
   rabbitmq:
     image: rabbitmq:management
@@ -6,9 +11,46 @@ services:
     ports:
       - "5672:5672" # rabbitmq default
       - "15672:15672" # rabbitmq management
-      - "3000:3000" # grafana dashboard
+      - "15692:15692" # rabbitmq prometheus
     volumes:
       - "./rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - rabbitmq-prometheus_prometheus:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - rabbitmq-prometheus_grafana:/var/lib/grafana
+      - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+      - ./grafana/dashboards:/dashboards
+    environment:
+      GF_INSTALL_PLUGINS: "flant-statusmap-panel,grafana-piechart-panel"
+
+  node-exporter:
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)"
+    expose:
+      - 9100
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
 
   mongodb:
     image: mongo:latest
