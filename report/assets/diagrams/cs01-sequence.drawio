@@ -1,0 +1,104 @@
+<mxfile host="65bd71144e" scale="3" border="0">
+    <diagram name="Page-1" id="13e1069c-82ec-6db2-03f1-153e76fe0fe0">
+        <mxGraphModel dx="474" dy="326" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="7baba1c4bc27f4b0-2" value=":Client" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="80" width="100" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-3" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-2" vertex="1">
+                    <mxGeometry x="45" y="40" width="10" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-5" value="/api/movie/list" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" parent="7baba1c4bc27f4b0-2" target="7baba1c4bc27f4b0-3" edge="1">
+                    <mxGeometry width="80" relative="1" as="geometry">
+                        <mxPoint x="45" y="90" as="sourcePoint"/>
+                        <mxPoint x="125" y="90" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-25" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-2" vertex="1">
+                    <mxGeometry x="45" y="360" width="10" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="7baba1c4bc27f4b0-3" value=":Aggregator" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="80" width="100" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-4" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-3" vertex="1">
+                    <mxGeometry x="45" y="90" width="10" height="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-24" value="List&amp;lt;Cinema&amp;gt;" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" parent="7baba1c4bc27f4b0-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="49.99999999999977" y="360" as="sourcePoint"/>
+                        <mxPoint x="-70" y="360" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7baba1c4bc27f4b0-5" value=":Cinema (Cineworld)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="80" width="100" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-16" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-5" vertex="1">
+                    <mxGeometry x="45" y="120" width="10" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-17" value="Cinema" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" parent="7baba1c4bc27f4b0-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="45" y="180" as="sourcePoint"/>
+                        <mxPoint x="-60" y="180" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7baba1c4bc27f4b0-6" value=":Cinema (Dundrum)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="80" width="100" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-18" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-6" vertex="1">
+                    <mxGeometry x="46.430000000000064" y="200.74" width="10" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-19" value="Cinema" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" parent="7baba1c4bc27f4b0-6" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="46.430000000000064" y="260.74" as="sourcePoint"/>
+                        <mxPoint x="-180" y="261" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-20" value="/movie/list" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" parent="7baba1c4bc27f4b0-6" edge="1">
+                    <mxGeometry x="-0.0335" width="80" relative="1" as="geometry">
+                        <mxPoint x="-180" y="201" as="sourcePoint"/>
+                        <mxPoint x="50.930000000000064" y="200.74" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="21.430000000000064" y="200.74"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7baba1c4bc27f4b0-7" value=":Cinema (UCD)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="740" y="80" width="100" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-21" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-7" vertex="1">
+                    <mxGeometry x="45.000000000000014" y="280.74" width="10" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-22" value="Cinema" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" parent="7baba1c4bc27f4b0-7" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="47.860000000000014" y="340.74" as="sourcePoint"/>
+                        <mxPoint x="-300" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-23" value="/movie/list" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" parent="7baba1c4bc27f4b0-7" edge="1">
+                    <mxGeometry x="-0.0335" width="80" relative="1" as="geometry">
+                        <mxPoint x="-300" y="281" as="sourcePoint"/>
+                        <mxPoint x="52.360000000000014" y="280.74" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="22.860000000000014" y="280.74"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-15" value="/movie/list" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" parent="1" target="7baba1c4bc27f4b0-5" edge="1">
+                    <mxGeometry x="-0.0335" width="80" relative="1" as="geometry">
+                        <mxPoint x="440" y="200" as="sourcePoint"/>
+                        <mxPoint x="587.83" y="260.22" as="targetPoint"/>
+                        <Array as="points"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rvRePJZ1kuDN7jLSSjlz-26" value="API Gateway + Eureka Service Discovery" style="shape=umlFrame;whiteSpace=wrap;html=1;width=300;height=20;" parent="1" vertex="1">
+                    <mxGeometry x="370" y="50" width="480" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
