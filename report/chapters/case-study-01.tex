@@ -11,7 +11,7 @@ The pilot case study implements the movie ticket reservation system prototype de
   \label{fig:cs01-arch}
 \end{figure}
 
-The architecture diagram above (Fig. \ref{fig:cs01-arch}) depicts the organisation of the microservices involved: an API gateway service to act as an interface between clients and other services, and aggregator service to gather results, a central service registry, and three independent cinema services - Cineworld, Dundrum and UCD. The following microservice design patterns have been employed while developing this web application:
+The architecture diagram in Fig. \ref{fig:cs01-arch} depicts the organisation of the microservices involved: an API gateway service to act as an interface between clients and other services, and aggregator service to gather results, a central service registry, and three independent cinema services - Cineworld, Dundrum and UCD. The following microservice design patterns have been employed while developing this web application:
 
 \subsubsection{API Gateway}
 
@@ -105,7 +105,7 @@ The fallback endpoint is shown above, and in this application it simply logs the
   \label{fig:server-side-discovery}
 \end{figure}
 
-Fig. \ref{fig:server-side-discovery} above depicts the gist of the service discovery pattern, and Fig. \ref{fig:cs01-arch} shows how a service registry is implemented in this case study using the Spring Cloud Netflix (Eureka) project \footnote{\url{https://spring.io/projects/spring-cloud-netflix}}. The server and client Maven dependencies are \code{spring-cloud-starter-netflix-eureka-server} and \code{spring-cloud-starter-netflix-eureka-client} respectively. The \code{eureka-server} service uses an \code{@EnableEurekaServer} annotation in its main application class to denote its server status (maintaining the service registry), and every other microservice uses a corresponding \code{@EnableEurekaClient} annotation (to self-register with the Eureka server on application startup). The server and sample client Configuration are shown in the following listings:
+Fig. \ref{fig:server-side-discovery} depicts the gist of the service discovery pattern, and Fig. \ref{fig:cs01-arch} shows how a service registry is implemented in this case study using the Spring Cloud Netflix (Eureka) project \footnote{\url{https://spring.io/projects/spring-cloud-netflix}}. The server and client Maven dependencies are \code{spring-cloud-starter-netflix-eureka-server} and \code{spring-cloud-starter-netflix-eureka-client} respectively. The \code{eureka-server} service uses an \code{@EnableEurekaServer} annotation in its main application class to denote its server status (maintaining the service registry), and every other microservice uses a corresponding \code{@EnableEurekaClient} annotation (to self-register with the Eureka server on application startup). The server and sample client Configuration are shown in the following listings:
 
 \begin{lstlisting}[caption=Snippet from Eureka server's application properties]
   eureka:
@@ -231,7 +231,7 @@ As discussed in the project outline, Docker is used to containerise and deploy t
 
 The wide range of benefits to containerising microservices make Docker the industry leading tool for service deployment. Developers are able to choose any suitable programming language and framework (including different versions), since Docker provides isolated environments with all required dependencies. The \textit{service instance per container} design pattern allows each microservice to be packaged as a Docker container image, permitting the deployment of multiple instances of the microservice as separate containers if required.
 
-There are far reaching performance benefits of this pattern, including service reproducibility, independent deployment and scaling, hardware resource (CPU/memory) constraining capabilities, service instance monitoring, reliability and fault tolerance. Most importantly, Docker containers are much faster than traditional virtual machines (VMs) thanks to lightweight architecture (sharing the host OS kernel instead of requiring a complete OS or hypervisor). In large scale projects, container orchestration tools such as Kubernetes \footnote{\url{https://kubernetes.io}}, Marathon (  ) \footnote{\url{https://mesosphere.github.io/marathon/}}, Amazon ECS \footnote{\url{https://aws.amazon.com/ecs/}} and EKS \footnote{\url{https://aws.amazon.com/eks/}} are widely used to automate the operational effort required to manage containerised microservices, which is key for well-run DevOps.
+There are far reaching performance benefits of this pattern, including service reproducibility, independent deployment and scaling, hardware resource (CPU/memory) constraining capabilities, service instance monitoring, reliability and fault tolerance. Most importantly, Docker containers are much faster than traditional virtual machines (VMs) thanks to lightweight architecture (sharing the host OS kernel instead of requiring a complete OS or hypervisor). In large scale projects, container orchestration tools such as Kubernetes \footnote{\url{https://kubernetes.io}}, Marathon (Mesos) \footnote{\url{https://mesosphere.github.io/marathon/}}, Amazon ECS \footnote{\url{https://aws.amazon.com/ecs/}} and EKS \footnote{\url{https://aws.amazon.com/eks/}} are widely used to automate the operational effort required to manage containerised microservices, which is key for well-run DevOps.
 
 The three cinema microservices have identical Dockerfiles, as shown below. Each of them use a JDK 11 base image, copy the compiled JAR file into the container, then run it after a 5 second wait. Using Docker Compose, each service's Dockerfile is used to start the application.
 
@@ -244,9 +244,14 @@ The three cinema microservices have identical Dockerfiles, as shown below. Each 
 
 \subsection{Evaluation}
 
+\subsubsection{Performance Modelling}
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.75\linewidth]{./assets/diagrams/cs01-sequence.png}
   \caption{UML sequence diagram for listing movies from all cinemas (case study 1).}
   \label{fig:cs01-sequence}
 \end{figure}
+
+\subsubsection{Manual API Testing}
+\subsubsection{Performance Testing}

@@ -1,6 +1,6 @@
 \section{Case Study 2}
 
-
+The second case study implements the same system prototype for a movie ticket reservation system as seen in the pilot study. However, a different set of microservice design patterns is explored this time, including a significant change in inter-service communication style from synchronous REST request/response to asynchronous messaging.
 
 \subsection{Design and Implementation}
 
@@ -11,8 +11,53 @@
   \label{fig:cs02-arch}
 \end{figure}
 
+The system architecture shown in Fig. \ref{fig:cs02-arch} is similar to the previous study's architecture in the sense that the three cinemas are still independent microservices with separate MongoDB database connections. However, the intermediary that intercepts client requests has been changed from an API gateway plus aggregator setup, to a message broker, that uses message queues to communicate with other services. For external clients, the broker still exposes a modified REST API, but with separate endpoints to send a request and fetch a response. Requests are hence made asynchronous from the client's perspective too, since a single endpoint is no longer expected to deliver results while maintaining an open connection. The design patterns implemented by this web application are described in detail here:
+
+
 \subsubsection{Asynchronous Messaging}
+
+For inter-service communication, the \textit{asynchronous messaging} is the recommended design pattern over synchronous request/response. Although external clients should still avail of a synchronous REST API to contact the intermediary (broker), the internal cinema services should communicate with the broker asynchronously to prevent blocking. There exist multiple realisations of this pattern, including the use of notifications, HTTP polling, publish/subscribe, or messaging queues request/response.
+
+In this case study, RabbitMQ \footnote{\url{https://www.rabbitmq.com}}, a widely popular open-source asynchronous messaging technology, is the tool of choice. RabbitMQ implements AMQP (Advanced Message Queueing Protocol), a wire-level message-oriented middleware protocol with defining features such as message orientation, queueing, routing (point-to-point and publish/subscribe), reliability and security. The Spring AMQP \footnote{\url{https://spring.io/projects/spring-amqp\#overview}} project is used to greatly reduce the amount of boilerplate code required for infrastructure setup, by providing high-level abstractions: a Listener container asynchronously processed inbound messages, RabbitTemplate is used to send/receive messages, RabbitAdmin auto-declares queues, exchanges and bindings.
+
+The main components of the messaging infrastructure are:
+\begin{itemize}
+  \item \textit{Request queues} - Every cinema microservice is configured to receive requests from the broker via a corresponding request queue.
+  \item \textit{Response queue} - All cinema services send responses to a common response queue, that the broker consumes from before returning responses to the client.
+  \item \textit{Topic exchange} - An exchange in RabbitMQ is a routing agent, for directing messages to/from different queues using header attributes, bindings and routing keys. A single topic exchange (given name: \code{cinema}) is used in this application, that is appropriate for messaging based on pre-defined "patterns" of routing keys as described below.
+  \item \textit{Bindings and routing keys} - Bindings are used to link the four queues (3 request, 1 response) to the cinema topic exchange, based on different routing keys. For instance, a message with routing key \code{request.to.cinema} is broadcast by the exchange to each request queue. Each cinema service is then able to process an identical request (e.g. listing movie showtimes). A response message from each cinema with key \code{response.from.cinema} is sent to the common response queue. The broker can then combine the message responses from each cinema and present a full list to the client. For special cases, such as client requests related to a single cinema service (e.g. making a reservation, listing reservations), a separate routing key with the pattern \code{request.to.cinema.{cinemaName}} tells the topic exchange to send the request to only a single queue corresponding to the appropriate \code{cinemaName}.
+  \item \textit{Message converter} - Message converters are used to handle the interconversion/serialisation of Java objects (initial stage - from cinema services - JPA \footnote{Java Persistence API} repositories), Spring AMQP messages (during transmission via queues) and finally the JSON response (shown to the client).
+\end{itemize}
+
+In each microservice, a \code{config.MessagingConfig} \code{@Configuration} class defines the above infrastructure as Spring beans using Spring AMQP abstractions. As previously mentioned, the broker service exposes a synchronous REST API for the client. For example, one function of the system is to list the movie the showtimes from all cinemas. Instead of immediately returning the movies, the \code{/api/movie/list} endpoint simply broadcasts the request to all cinemas, and returns a broker-generated \textit{correlation ID}. This ID is used to map the asynchronous request to the responses. The broker uses a \code{@RabbitListener} to monitor the response queue, and any received messages are cached, ready to return to the client when the proper correlation ID is provided via the corresponding API endpoint: \code{/api/movie/list/\{correlationId\}}. Unlike the synchronous broker-client communication, the broker-cinema communication channels are completely asynchronous. A \code{RabbitTemplate} and \code{MessagePostProcessor} are used to format messages from the broker, and published to the appropriate queues for the cinemas. All plain Java objects are serialised by the message converter. The individual cinema services also use a \code{@RabbitListener} to monitor the request queue for broker requests, then perform database read/write operations, and finally route the response to the common response queue.
+
+The code listing below shows a snippet from the broker service, with a HTTP GET mapping to send a request (e.g. listing movie showtimes from cinemas) to receive a correlation ID, then a separate GET mapping using the ID to fetch the response list asynchronously.
+
+
+\begin{lstlisting}[language=Java, caption=Code snippet from \code{MovieController.java} in \code{broker-service}]
+  @GetMapping("/list")
+  public String listMovies() {
+      String endpoint = "/movie/list";
+      String routingKey = requestRoutingKey;
+      String correlationId =
+              brokerService.sendRequest(new RequestMessage(endpoint, null), routingKey);
+      return correlationId;
+  }
+
+  @GetMapping("/list/{correlationId}")
+  public List<Cinema> listMoviesResponse(@PathVariable String correlationId) {
+      List<Message> responses = brokerService.fetchResponseFromCache(correlationId);
+      return responses.stream()
+              .map(r -> (Cinema) SerializationUtils.deserialize(r.getBody()))
+              .collect(Collectors.toList());
+  }
+\end{lstlisting}
+
+As mentioned earlier, any asynchronous responses from cinemas are first cached in the broker using the correlation ID, then the API allows reading from the cache with the correct ID via a separate endpoint. In terms of system performance compared to case study 1, there is no longer a need for the client to be blocked after sending a request (in anticipation of an immediate response). Requests can be sent to the broker, and then fetched later when needed using the correlation ID. As a result, the client can continue with other tasks after sending a series of requests to be processed, then collect the responses when they need to be displayed by some frontend.
+
+
 \subsubsection{Application Metrics}
+
 \subsubsection{Health Check API}
 \subsubsection{Externalised Configuration}
 \subsubsection{Database per Service}
@@ -20,9 +65,14 @@
 
 \subsection{Evaluation}
 
+\subsubsection{Performance Modelling}
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.75\linewidth]{./assets/diagrams/cs02-sequence.png}
   \caption{UML sequence diagram for listing movies from all cinemas (case study 2).}
   \label{fig:cs02-sequence}
 \end{figure}
+
+\subsubsection{Manual API Testing}
+\subsubsection{Performance Testing}

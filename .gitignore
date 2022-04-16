@@ -2,5 +2,6 @@
 .vscode/
 .ipynb_checkpoints/
 
-report/*.bcf
-report/*.run.xml
+report/**/.tmp.tex
+report/project-report.*
+!report/project-report.{tex,pdf}
