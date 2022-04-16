@@ -5,10 +5,10 @@ The second case study implements the same system prototype for a movie ticket re
 \subsection{Design and Implementation}
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=0.6\linewidth]{./assets/diagrams/cs02-arch.png}
-  \caption{System design for the second case study.}
-  \label{fig:cs02-arch}
+	\centering
+	\includegraphics[width=0.6\linewidth]{./assets/diagrams/cs02-arch.png}
+	\caption{System design for the second case study.}
+	\label{fig:cs02-arch}
 \end{figure}
 
 The system architecture shown in Fig. \ref{fig:cs02-arch} is similar to the previous study's architecture in the sense that the three cinemas are still independent microservices with separate MongoDB database connections. However, the intermediary that intercepts client requests has been changed from an API gateway plus aggregator setup, to a message broker, that uses message queues to communicate with other services. For external clients, the broker still exposes a modified REST API, but with separate endpoints to send a request and fetch a response. Requests are hence made asynchronous from the client's perspective too, since a single endpoint is no longer expected to deliver results while maintaining an open connection. The design patterns implemented by this web application are described in detail here:
@@ -22,16 +22,26 @@ In this case study, RabbitMQ \footnote{\url{https://www.rabbitmq.com}}, a widely
 
 The main components of the messaging infrastructure are:
 \begin{itemize}
-  \item \textit{Request queues} - Every cinema microservice is configured to receive requests from the broker via a corresponding request queue.
-  \item \textit{Response queue} - All cinema services send responses to a common response queue, that the broker consumes from before returning responses to the client.
-  \item \textit{Topic exchange} - An exchange in RabbitMQ is a routing agent, for directing messages to/from different queues using header attributes, bindings and routing keys. A single topic exchange (given name: \code{cinema}) is used in this application, that is appropriate for messaging based on pre-defined "patterns" of routing keys as described below.
-  \item \textit{Bindings and routing keys} - Bindings are used to link the four queues (3 request, 1 response) to the cinema topic exchange, based on different routing keys. For instance, a message with routing key \code{request.to.cinema} is broadcast by the exchange to each request queue. Each cinema service is then able to process an identical request (e.g. listing movie showtimes). A response message from each cinema with key \code{response.from.cinema} is sent to the common response queue. The broker can then combine the message responses from each cinema and present a full list to the client. For special cases, such as client requests related to a single cinema service (e.g. making a reservation, listing reservations), a separate routing key with the pattern \code{request.to.cinema.{cinemaName}} tells the topic exchange to send the request to only a single queue corresponding to the appropriate \code{cinemaName}.
-  \item \textit{Message converter} - Message converters are used to handle the interconversion/serialisation of Java objects (initial stage - from cinema services - JPA \footnote{Java Persistence API} repositories), Spring AMQP messages (during transmission via queues) and finally the JSON response (shown to the client).
+	\item \textit{Request queues} - Every cinema microservice is configured to receive requests from the broker via a corresponding request queue.
+	\item \textit{Response queue} - All cinema services send responses to a common response queue, that the broker consumes from before returning responses to the client.
+	\item \textit{Topic exchange} - An exchange in RabbitMQ is a routing agent, for directing messages to/from different queues using header attributes, bindings and routing keys. A single topic exchange (given name: \code{cinema}) is used in this application, that is appropriate for messaging based on pre-defined "patterns" of routing keys as described below.
+	\item \textit{Bindings and routing keys} - Bindings are used to link the four queues (3 request, 1 response) to the cinema topic exchange, based on different routing keys. For instance, a message with routing key \code{request.to.cinema} is broadcast by the exchange to each request queue. Each cinema service is then able to process an identical request (e.g. listing movie showtimes). A response message from each cinema with key \code{response.from.cinema} is sent to the common response queue. The broker can then combine the message responses from each cinema and present a full list to the client. For special cases, such as client requests related to a single cinema service (e.g. making a reservation, listing reservations), a separate routing key with the pattern \code{request.to.cinema.{cinemaName}} tells the topic exchange to send the request to only a single queue corresponding to the appropriate \code{cinemaName}.
+	\item \textit{Message converter} - Message converters are used to handle the interconversion/serialisation of Java objects (initial stage - from cinema services - JPA \footnote{Java Persistence API} repositories), Spring AMQP messages (during transmission via queues) and finally the JSON response (shown to the client).
 \end{itemize}
 
-In each microservice, a \code{config.MessagingConfig} \code{@Configuration} class defines the above infrastructure as Spring beans using Spring AMQP abstractions. As previously mentioned, the broker service exposes a synchronous REST API for the client. For example, one function of the system is to list the movie the showtimes from all cinemas. Instead of immediately returning the movies, the \code{/api/movie/list} endpoint simply broadcasts the request to all cinemas, and returns a broker-generated \textit{correlation ID}. This ID is used to map the asynchronous request to the responses. The broker uses a \code{@RabbitListener} to monitor the response queue, and any received messages are cached, ready to return to the client when the proper correlation ID is provided via the corresponding API endpoint: \code{/api/movie/list/\{correlationId\}}. Unlike the synchronous broker-client communication, the broker-cinema communication channels are completely asynchronous. A \code{RabbitTemplate} and \code{MessagePostProcessor} are used to format messages from the broker, and published to the appropriate queues for the cinemas. All plain Java objects are serialised by the message converter. The individual cinema services also use a \code{@RabbitListener} to monitor the request queue for broker requests, then perform database read/write operations, and finally route the response to the common response queue.
+In each microservice, a \code{config.MessagingConfig} \code{@Configuration} class defines the above infrastructure as Spring beans using Spring AMQP abstractions. As previously mentioned, the broker service exposes a synchronous REST API for the client. This is in fact a way to implement the asynchronous request/response pattern as seen in Fig. \ref{fig:async-req-res}). The first API call enqueues a request to be processed, and returns a temporary result like a new endpoint or the request ID that was forwarded. Then a second API call actually returns the data requested, after ensuring that the result is mapped to the correct request (usually using an ID).
 
-The code listing below shows a snippet from the broker service, with a HTTP GET mapping to send a request (e.g. listing movie showtimes from cinemas) to receive a correlation ID, then a separate GET mapping using the ID to fetch the response list asynchronously.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{./assets/images/case-studies/async-req-res.png}
+	\caption{Sample asynchronous request/response pattern}
+	\captionsource{Microsoft, \url{https://github.com/mspnp/cloud-design-patterns}}
+	\label{fig:async-req-res}
+\end{figure}
+
+For example, one function of the system is to list the movie the showtimes from all cinemas. Instead of immediately returning the movies, the \code{/api/movie/list} endpoint simply broadcasts the request to all cinemas, and returns a broker-generated \textit{correlation ID}. This ID is used to map the asynchronous request to the responses. The broker uses a \code{@RabbitListener} to monitor the response queue, and any received messages are cached, ready to return to the client when the proper correlation ID is provided via the corresponding API endpoint: \code{/api/movie/list/\{correlationId\}}. Unlike the synchronous broker-client communication, the broker-cinema communication channels are completely asynchronous. A \code{RabbitTemplate} and \code{MessagePostProcessor} are used to format messages from the broker, and published to the appropriate queues for the cinemas. All plain Java objects are serialised by the message converter. The individual cinema services also use a \code{@RabbitListener} to monitor the request queue for broker requests, then perform database read/write operations, and finally route the response to the common response queue.
+
+The code listing below shows a snippet from the broker service, with a HTTP GET mapping to send a request (e.g. listing movie showtimes from cinemas) and return a correlation ID \code{String}, then a separate GET mapping using the ID to fetch the response list asynchronously.
 
 
 \begin{lstlisting}[language=Java, caption=Code snippet from \code{MovieController.java} in \code{broker-service}]
@@ -58,20 +68,70 @@ As mentioned earlier, any asynchronous responses from cinemas are first cached i
 
 \subsubsection{Application Metrics}
 
+For successful performance engineering, observability and monitoring patterns are indispensable. Monitoring is often defined as capturing the behaviour of a system by performing health checks and metrics over time, for the to aid the process of anomaly detection and root cause analysis. While maintaining text logs is also important, aggregated metrics over periods of time provide insights into the historical and current state of a system. In order to understand the behaviour of an application and be able to troubleshoot performance issues or service degradations, adequate monitoring infrastructure must be in place, along with visualisation tools.
+
+In applications using RabbitMQ, the most popular monitoring stack includes Prometheus \footnote{\url{https://prometheus.io}} (monitoring toolkit) and Grafana \footnote{\url{https://grafana.com/grafana/}} (metrics visualisation). Although a default management plugin \footnote{\url{https://www.rabbitmq.com/management.html}} exists (exposing RabbitMQ metrics for nodes, connections, message rates, etc.), long term metric storage and visualisation
+services like Prometheus and Grafana are known to be more suitable for production systems.
+
+
+
 \subsubsection{Health Check API}
+
+As discussed earlier, monitoring is crucial for any application, where the most basic aspect happens to be \textit{health checking}.
+
+
+The next three design patterns are invaluable to a microservice-based application like the one implemented in case studies 1 and 2, and are hence common to both:
+
 \subsubsection{Externalised Configuration}
+
+Docker Compose environment variables and Spring application properties for the various services are used to configure the microservices. The environment variables set by Docker are translated into Spring Boot application properties, e.g. \code{SERVER\_PORT} becomes \code{server.port}, \code{SPRING\_RABBITMQ\_HOST} becomes \code{spring.rabbitmq.host}, etc. without even having to specify the properties in the standard \code{application.yml}.
+
+\begin{lstlisting}[caption=UCD cinema's \code{application.yml}]
+  spring:
+    application:
+      name: cinema-ucd-service
+
+  data_file: data/movies.json
+
+  amqp:
+    exchange: cinema
+    request:
+      routingKey: request.to.cinema
+      serviceOnlyRoutingKey: request.to.cinema.ucd
+    response:
+      routingKey: response.from.cinema
+\end{lstlisting}
+
+The listing above shows how the data file used to populate MongoDB, and other RabbitMQ configurations such as name of exchange and routing keys are set in the application properties. When access is required in the source code, Spring uses the \code{@Value} annotation to read said properties. As mentioned in case study 1, externalising configuration in this manner helps with organisation and reduces avoidable development (human) errors.
+
 \subsubsection{Database per Service}
+
+Maintaining a separate MongoDB database for each cinema microservice is still the most practical approach in a distributed system to avoid a data operation bottleneck. A server is set up with Docker, and multiple databases are created again with the help of Spring Boot environment variables such as \code{SPRING\_DATA\_MONGODB\_DATABASE} and \code{SPRING\_DATA\_MONGODB\_PORT}.
+
+\begin{lstlisting}[caption=Snippet from \code{docker-compose.yml} for UCD cinema]
+  cinema-ucd-service:
+    ...
+    environment:
+      ...
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_DATABASE=cinema-ucd
+      - SPRING_DATA_MONGODB_PORT=27017
+    ...
+\end{lstlisting}
+
 \subsubsection{Service Instance per Container}
+
+The ease of spinning up Docker containers makes this deployment pattern the most pragmatic. This is especially true for this second case study, where much additional infrastructure is required, such as RabbitMQ, Prometheus and Grafana servers, which are all deployed as independent services. Exposing ports such as 9090 (Prometheus), 3000 (Grafana), 15672 (RabbitMQ management) provides access to various user interfaces to host machine browsers. Using Docker Swarm or Kubernetes with Docker allows container scaling and orchestration, which are important when the load creates a need for multiple containers across multiple host machines.
 
 \subsection{Evaluation}
 
 \subsubsection{Performance Modelling}
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=0.75\linewidth]{./assets/diagrams/cs02-sequence.png}
-  \caption{UML sequence diagram for listing movies from all cinemas (case study 2).}
-  \label{fig:cs02-sequence}
+	\centering
+	\includegraphics[width=0.75\linewidth]{./assets/diagrams/cs02-sequence.png}
+	\caption{UML sequence diagram for listing movies from all cinemas (case study 2).}
+	\label{fig:cs02-sequence}
 \end{figure}
 
 \subsubsection{Manual API Testing}
