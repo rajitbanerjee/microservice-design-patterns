@@ -1,2 +1,2 @@
-GET http://localhost:15672/api/health/checks/node-is-mirror-sync-critical
+GET http://localhost:15672/api/health/checks/protocol-listener/amqp1
 Authorization: Basic guest:guest

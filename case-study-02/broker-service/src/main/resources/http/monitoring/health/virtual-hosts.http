@@ -1,2 +1,2 @@
-GET http://localhost:15672/api/health/checks/alarms
+GET http://localhost:15672/api/health/checks/virtual-hosts
 Authorization: Basic guest:guest
