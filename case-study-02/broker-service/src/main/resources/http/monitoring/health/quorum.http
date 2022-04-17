@@ -1,0 +1,2 @@
+GET http://localhost:15672/api/health/checks/node-is-quorum-critical
+Authorization: Basic guest:guest

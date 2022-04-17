@@ -1,0 +1,2 @@
+GET http://localhost:15672/api/health/checks/port-listener/8080
+Authorization: Basic guest:guest

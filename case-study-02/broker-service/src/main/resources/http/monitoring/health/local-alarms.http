@@ -1,0 +1,2 @@
+GET http://localhost:15672/api/health/checks/certificate-expiration/2/months
+Authorization: Basic guest:guest

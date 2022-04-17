@@ -1,0 +1,2 @@
+GET http://localhost:15672/api/health/checks/alarms
+Authorization: Basic guest:guest

@@ -1,0 +1,2 @@
+GET http://localhost:15672/api/health/checks/node-is-mirror-sync-critical
+Authorization: Basic guest:guest

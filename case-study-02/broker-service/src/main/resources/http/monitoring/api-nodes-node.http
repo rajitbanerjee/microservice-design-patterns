@@ -1,0 +1,2 @@
+GET http://localhost:15672/api/nodes/rabbit@cda3f2241e0d/memory
+Authorization: Basic guest:guest
