@@ -27,6 +27,7 @@
 \newcommand{\code}[1]{\texttt{\footnotesize{#1}}}
 \newcommand*{\captionsource}[1]{Source: #1}
 
+\setcounter{secnumdepth}{5}
 \renewcommand{\section}{\@startsection
 {section}%                        % the name
 {1}%                              % the level

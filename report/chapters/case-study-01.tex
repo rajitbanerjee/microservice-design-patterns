@@ -5,10 +5,10 @@ The pilot case study implements the movie ticket reservation system prototype de
 \subsection{Design and Implementation}
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=0.6\linewidth]{./assets/diagrams/cs01-arch.png}
-  \caption{System design for the first case study.}
-  \label{fig:cs01-arch}
+	\centering
+	\includegraphics[width=0.6\linewidth]{./assets/diagrams/cs01-arch.png}
+	\caption{System design for the first case study.}
+	\label{fig:cs01-arch}
 \end{figure}
 
 The architecture diagram in Fig. \ref{fig:cs01-arch} depicts the organisation of the microservices involved: an API gateway service to act as an interface between clients and other services, and aggregator service to gather results, a central service registry, and three independent cinema services - Cineworld, Dundrum and UCD. The following microservice design patterns have been employed while developing this web application:
@@ -98,11 +98,11 @@ The fallback endpoint is shown above, and in this application it simply logs the
 \textit{Service discovery} is an essential design pattern for modern microservices, where the network location (host name/IP address and port number) may be dynamic due to the industry dominance of virtualisation and containerisation solutions to run microservice-based applications. Hard-coding the locations of services is then considered an anti-pattern, since it necessitates changes in multiple places when services are scaled up or down. Hence, a natural solution is to set up a service registry, which maintains the locations of all active services, and provides access to registered services through logical addresses (such as \code{lb://AGGREGATOR-SERVICE} or \code{lb://CINEMA-CINEWORLD-SERVICE} instead of actual network locations).
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=0.7\linewidth]{./assets/images/case-studies/server-side-discovery.png}
-  \caption{A simple service registry setup.}
-  \captionsource{\cite{peyrott15}}
-  \label{fig:server-side-discovery}
+	\centering
+	\includegraphics[width=0.7\linewidth]{./assets/images/case-studies/server-side-discovery.png}
+	\caption{A simple service registry setup.}
+	\captionsource{\cite{peyrott15}}
+	\label{fig:server-side-discovery}
 \end{figure}
 
 Fig. \ref{fig:server-side-discovery} depicts the gist of the service discovery pattern, and Fig. \ref{fig:cs01-arch} shows how a service registry is implemented in this case study using the Spring Cloud Netflix (Eureka) project \footnote{\url{https://spring.io/projects/spring-cloud-netflix}}. The server and client Maven dependencies are \code{spring-cloud-starter-netflix-eureka-server} and \code{spring-cloud-starter-netflix-eureka-client} respectively. The \code{eureka-server} service uses an \code{@EnableEurekaServer} annotation in its main application class to denote its server status (maintaining the service registry), and every other microservice uses a corresponding \code{@EnableEurekaClient} annotation (to self-register with the Eureka server on application startup). The server and sample client Configuration are shown in the following listings:
@@ -114,7 +114,7 @@ Fig. \ref{fig:server-side-discovery} depicts the gist of the service discovery p
       fetch-registry: false
 \end{lstlisting}
 
-The server is prevented from trying to register itself. For the sample client configuration, the Spring Boot application attempts to contact the Eureka server on \code{code.client.serviceUrl.defaultZone}, which is specified in \code{docker-compose.yml}. Eureka clients also send regular heartbeat messages to the server (set using \code{lease-renewal-interval-in-seconds}) to maintain their active status. Once the server stops receiving heartbeats below an expected threshold, it starts evicting the instances from the registry; this is known as self-preservation. 
+The server is prevented from trying to register itself. For the sample client configuration, the Spring Boot application attempts to contact the Eureka server on \code{code.client.serviceUrl.defaultZone}, which is specified in \code{docker-compose.yml}. Eureka clients also send regular heartbeat messages to the server (set using \code{lease-renewal-interval-in-seconds}) to maintain their active status. Once the server stops receiving heartbeats below an expected threshold, it starts evicting the instances from the registry; this is known as self-preservation.
 
 \begin{lstlisting}[caption=Snippet from a Eureka client's application properties]
   eureka:
@@ -130,15 +130,15 @@ The server is prevented from trying to register itself. For the sample client co
 Netflix Eureka also makes a dashboard available (Fig. \ref{fig:eureka-dashboard}) at the configured port (8761), which shows the active services, system status, and other useful information about memory usage, number of CPUs, server uptime, and so on.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=1.0\linewidth]{./assets/images/case-studies/eureka-dashboard.png}
-  \caption{Eureka dashboard}
-  \label{fig:eureka-dashboard}
+	\centering
+	\includegraphics[width=1.0\linewidth]{./assets/images/case-studies/eureka-dashboard.png}
+	\caption{Eureka dashboard}
+	\label{fig:eureka-dashboard}
 \end{figure}
 
 \subsubsection{Aggregator}
 
-The service \textit{aggregator} design pattern for microservices is useful when similar calls need to made to multiple microservices. On receiving a request from the client via an API gateway, the aggregator service dispatches the request to appropriate internal backend microservices, then combines the responses into a single structure, which is returned to the requester. The aggregator itself doesn't need to know the routing details of internal services, since it can communicate with them through the API gateway again. The performance benefit of this pattern is the reduction in communication overhead and chattiness between the client and the various internal cinema microservices. 
+The service \textit{aggregator} design pattern for microservices is useful when similar calls need to made to multiple microservices. On receiving a request from the client via an API gateway, the aggregator service dispatches the request to appropriate internal backend microservices, then combines the responses into a single structure, which is returned to the requester. The aggregator itself doesn't need to know the routing details of internal services, since it can communicate with them through the API gateway again. The performance benefit of this pattern is the reduction in communication overhead and chattiness between the client and the various internal cinema microservices.
 
 Moreover, in this case study, the aggregator service relies on the service discovery pattern to find the registered cinema services at any given time. The code snippet from \code{aggregator-service} below illustrates how a custom discovery service function is used to fetch the addresses of all active cinemas, which the aggregator can use to send identical GET or POST requests to (received from client via the gateway). The primary advantage of this design choice is the fact that the aggregator does not need to be made aware when the number of cinema services changes, as long as the necessary registration process is completed with the Eureka server.
 
@@ -244,14 +244,27 @@ The three cinema microservices have identical Dockerfiles, as shown below. Each 
 
 \subsection{Evaluation}
 
+In order to evaulate the first case study, the aforementioned plan involving performance modelling, manual API testing and JMeter load testing is followed.
+
 \subsubsection{Performance Modelling}
 
+Fig. \ref{fig:cs01-sequence} shows a sequence diagram for a scenario where the client wishes to fetch the list of movie showtimes from all active cinema microservices, and view the aggregated results. The digram components follow the specifications from OMG (2011) \cite{omg11}, showing a series of \textit{objects} (e.g. Client, Aggregator, Cinemas) with vertical \textit{lifelines} (downward flow of time). Opaque rectangles on top of lifelines are \textit{activation boxes} (i.e. method-invocation boxes) which indicate an object handling/processing a message.
+
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=0.75\linewidth]{./assets/diagrams/cs01-sequence.png}
-  \caption{UML sequence diagram for listing movies from all cinemas (case study 1).}
-  \label{fig:cs01-sequence}
+	\centering
+	\includegraphics[width=0.75\linewidth]{./assets/diagrams/cs01-sequence.png}
+	\caption{UML sequence diagram for listing movies from all cinemas (case study 1).}
+	\label{fig:cs01-sequence}
 \end{figure}
+
+Sequence of steps:
+\begin{itemize}
+	\item Client calls the API endpoint \code{/api/movie/list} exposed by the Aggregator service, via the API gateway and Eureka service discovery. All synchronous calls are represented by closed arrow heads with solid lines.
+	\item When received (dashed lines) by the Aggregator, it requests each active Cinema service (again via the gateway, discovering the ports using Eureka), for their respective list of movie showtimes.
+	\item Each service responds with a \code{Cinema} object, containing a unique identifier, cinema name, and list of movies (including showtimes).
+	\item The Aggregator then combines all \code{Cinema} objects into a list, to return to the Client.
+	\item Since this entire flow is synchronous, the connection between the Client and Aggregator remains open while the latter contacts all cinemas.
+\end{itemize}
 
 \subsubsection{Manual API Testing}
 \subsubsection{Performance Testing}

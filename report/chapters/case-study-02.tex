@@ -29,6 +29,15 @@ The main components of the messaging infrastructure are:
 	\item \textit{Message converter} - Message converters are used to handle the interconversion/serialisation of Java objects (initial stage - from cinema services - JPA \footnote{Java Persistence API} repositories), Spring AMQP messages (during transmission via queues) and finally the JSON response (shown to the client).
 \end{itemize}
 
+Fig. \ref{fig:rmq-management} shows the 4 queues set up for requests and response messages, using the RabbitMQ Management plugin interface.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\linewidth]{./assets/images/case-studies/rmq-management.png}
+	\caption{The Queues section from the RabbitMQ Management UI (\url{http://localhost:15672}). Default login credentials: \code{guest:guest}}
+	\label{fig:rmq-management}
+\end{figure}
+
 In each microservice, a \code{config.MessagingConfig} \code{@Configuration} class defines the above infrastructure as Spring beans using Spring AMQP abstractions. As previously mentioned, the broker service exposes a synchronous REST API for the client. This is in fact a way to implement the asynchronous request/response pattern as seen in Fig. \ref{fig:async-req-res}). The first API call enqueues a request to be processed, and returns a temporary result like a new endpoint or the request ID that was forwarded. Then a second API call actually returns the data requested, after ensuring that the result is mapped to the correct request (usually using an ID).
 
 \begin{figure}[H]
@@ -68,16 +77,26 @@ As mentioned earlier, any asynchronous responses from cinemas are first cached i
 
 \subsubsection{Application Metrics}
 
-For successful performance engineering, observability and monitoring patterns are indispensable. Monitoring is often defined as capturing the behaviour of a system by performing health checks and metrics over time, for the to aid the process of anomaly detection and root cause analysis. While maintaining text logs is also important, aggregated metrics over periods of time provide insights into the historical and current state of a system. In order to understand the behaviour of an application and be able to troubleshoot performance issues or service degradations, adequate monitoring infrastructure must be in place, along with visualisation tools.
+For successful performance engineering in a distributed system, observability and monitoring pattern implementations are indispensable. Monitoring is often defined as capturing the behaviour of a system by performing health checks and metrics over time, to aid the process of anomaly detection and root cause analysis. While maintaining text logs is also important, aggregated metrics over periods of time provide insights into the historical and current state of a system. In order to understand the behaviour of an application and be able to troubleshoot performance issues or service degradations, adequate monitoring infrastructure must be in place, along with visualisation tools.
 
-In applications using RabbitMQ, the most popular monitoring stack includes Prometheus \footnote{\url{https://prometheus.io}} (monitoring toolkit) and Grafana \footnote{\url{https://grafana.com/grafana/}} (metrics visualisation). Although a default management plugin \footnote{\url{https://www.rabbitmq.com/management.html}} exists (exposing RabbitMQ metrics for nodes, connections, message rates, etc.), long term metric storage and visualisation
-services like Prometheus and Grafana are known to be more suitable for production systems.
+In applications using RabbitMQ, the most popular monitoring stack includes Prometheus \footnote{\url{https://prometheus.io}} (monitoring toolkit) and Grafana \footnote{\url{https://grafana.com/grafana/}} (metrics visualisation). Although a default management plugin \footnote{\url{https://www.rabbitmq.com/management.html}} exists (exposing RabbitMQ metrics for nodes, connections, message rates, etc.), long term metric storage and visualisation services like Prometheus and Grafana are known to be more suitable for production systems.
 
+The \code{rabbitmq\_prometheus} plugin exposes all RabbitMQ metrics on port 15692, in Prometheus text format. A dedicated Dockerised Prometheus server is also set up (configuration file: \code{prometheus.yml}) to monitor \textit{itself} (port 9090), the RabbitMQ prometheus metrics (port 15692) as well as a Dockerised \code{node-exporter} service (Prometheus exporter for host machine hardware and OS metrics) (port 9100). A screenshot of the Prometheus target dashboard is shown in Fig.
+\ref{fig:prom-targets}, with the 3 targets defined in \code{prometheus.yml} for scraping metrics.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{./assets/images/case-studies/prom-targets.png}
+	\caption{Prometheus targets dashboard on \url{http://localhost:9090}.}
+	\label{fig:prom-targets}
+\end{figure}
+
+Due to the limited features of the RabbitMQ management plugin and the Prometheus dashboard alone, Grafana (port 3000, default credentials \code{admin:admin}) is the visualisation tool of choice, which can use the Prometheus server as a data source. The RabbitMQ team provides a number of pre-designed dashboards for RabbitMQ and runtime metrics (e.g. \code{RabbitMQ-Overview.json}, runtime memory allocators, inter-node communication, etc.), which are specified in the local \code{./grafana/} directory.
 
 
 \subsubsection{Health Check API}
 
-As discussed earlier, monitoring is crucial for any application, where the most basic aspect happens to be \textit{health checking}.
+As discussed earlier, monitoring is crucial for any application, the basic aspect of which happens to be \textit{health checking}. This is especially true for modern-day microservices, which are usually hosted on the cloud: affected by several factors such as network latency, bandwidth, and performance of "black-box" host machines. Hence, the health of services should be verfified regularly as a part of the monitoring infrastructure, in order to maintain SLAs (service level agreement) and necessary availability levels.
 
 
 The next three design patterns are invaluable to a microservice-based application like the one implemented in case studies 1 and 2, and are hence common to both:
@@ -121,11 +140,15 @@ Maintaining a separate MongoDB database for each cinema microservice is still th
 
 \subsubsection{Service Instance per Container}
 
-The ease of spinning up Docker containers makes this deployment pattern the most pragmatic. This is especially true for this second case study, where much additional infrastructure is required, such as RabbitMQ, Prometheus and Grafana servers, which are all deployed as independent services. Exposing ports such as 9090 (Prometheus), 3000 (Grafana), 15672 (RabbitMQ management) provides access to various user interfaces to host machine browsers. Using Docker Swarm or Kubernetes with Docker allows container scaling and orchestration, which are important when the load creates a need for multiple containers across multiple host machines.
+The ease of spinning up Docker containers makes this deployment pattern the industry standard for microservices. This is especially true for this second case study, where much additional infrastructure is required, such as RabbitMQ messaging system, Prometheus and Grafana servers for montioring, which are all deployed as independent Dockerised services. Exposing ports such as 9090 (Prometheus), 3000 (Grafana), 15672 (RabbitMQ management) provides access to various user interfaces to host machine browsers. Using Docker Swarm or Kubernetes with Docker allows container scaling and orchestration, which are important when the load creates a need for multiple containers across multiple host machines.
 
 \subsection{Evaluation}
 
+Similar to the previous case study, the same approach of modelling, manual testing and JMeter testing is adopted here.
+
 \subsubsection{Performance Modelling}
+
+The significant change in communication mechanism from synchronous REST alone (case study 1), to asynchronous request/response (external) and messaging (internal) is expected to yield performance benefits. Fig. \ref{fig:cs02-sequence} shows quite a different sequence diagram for the identical movie listing use case explored in case study 1's evaluation.
 
 \begin{figure}[H]
 	\centering
@@ -133,6 +156,15 @@ The ease of spinning up Docker containers makes this deployment pattern the most
 	\caption{UML sequence diagram for listing movies from all cinemas (case study 2).}
 	\label{fig:cs02-sequence}
 \end{figure}
+
+Sequence of steps:
+\begin{itemize}
+	\item Firstly, contacting the Broker via synchronous REST only returns a correlation ID of the forwarded request, instead of a list of movies.
+	\item Next, the Broker sends asynchronous messages (open arrow heads, solid lines) to each Cinema via the RabbitMQ infrastructure (topic exchange, queues, routing keys), without expecting an immediate response.
+	\item When a Cinema is done processing the request, it returns the list of movie showtimes to the Broker, along with the request ID.
+	\item The Broker caches the responses from Cinemas using the same correlation ID, ready to be requested by the Client.
+	\item When the Client makes another synchronous REST API call to the Broker with the appropriate ID, the Broker returns any responses that were cached in the time since the initial request.
+\end{itemize}
 
 \subsubsection{Manual API Testing}
 \subsubsection{Performance Testing}
