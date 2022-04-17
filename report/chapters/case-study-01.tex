@@ -266,5 +266,7 @@ Sequence of steps:
 	\item Since this entire flow is synchronous, the connection between the Client and Aggregator remains open while the latter contacts all cinemas.
 \end{itemize}
 
+From the sequence diagram, one can infer that the API gateway (and possibly the aggregator) service can turn into potential performance bottlenecks if appropriate preventive measures are not taken under heavy load, especially since all the inter-service communication is synchronous and blocking. Similar modelling can also be done for other use cases, such as making a reservation, or listing reservations at a given cinema.
+
 \subsubsection{Manual API Testing}
 \subsubsection{Performance Testing}

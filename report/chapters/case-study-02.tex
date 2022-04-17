@@ -157,7 +157,7 @@ The ease of spinning up Docker containers makes this deployment pattern the indu
 
 \subsection{Evaluation}
 
-Similar to the previous case study, the same approach of modelling, manual testing and JMeter testing is adopted here.
+Similar to the previous case study, the same approach of modelling, manual API testing and JMeter load testing is adopted here.
 
 \subsubsection{Performance Modelling}
 
@@ -178,6 +178,9 @@ Sequence of steps:
 	\item The Broker caches the responses from Cinemas using the same correlation ID, ready to be requested by the Client.
 	\item When the Client makes another synchronous REST API call to the Broker with the appropriate ID, the Broker returns any responses that were cached in the time since the initial request.
 \end{itemize}
+
+The above model suggests the possibility of higher overall system performance compared to the first case study, since all inter-service communication is asynchronous and non-blocking. This is in fact a well-accepted approach when dealing with microservice-architecture - to have the external client or frontend facing service (like the broker) expose a synchronous REST API, while the internal microservices (like the cinemas with the broker) communicate asynchronously (here, via message queues).
+Requests are linked to their corresponding responses by some form of correlation ID.
 
 \subsubsection{Manual API Testing}
 \subsubsection{Performance Testing}
