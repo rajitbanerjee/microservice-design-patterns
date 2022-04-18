@@ -15,3 +15,12 @@
 - [Case Study 1](./case-study-01/)
 - [Case Study 2](./case-study-02/)
 
+### Getting Started
+
+In order to run the case study applications, the following are required:
+
+- Docker (with Docker Compose)
+- JDK 11
+- A number of free ports on the host machine, specified in [case-study-01/README.md](./case-study-01/README.md) and [case-study-02/README.md](./case-study-02/README.md).
+
+All other requirements (such as Netflix Eureka, RabbitMQ, Prometheus, Grafana, etc.) are set up by Docker Compose.
