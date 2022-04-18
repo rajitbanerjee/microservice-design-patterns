@@ -11,12 +11,19 @@ The second case study showcasing a web app (movie ticket reservation system) bui
 - For local testing of the backend API, run the requests in `.http` files under `./broker-service/src/main/resources/http/*`.
 
 - The following ports on the host machine need to be free:
+
   - 3000 (Grafana)
   - 5672 (RabbitMQ)
   - 8099 (Broker service)
   - 9090 (Prometheus)
   - 15672 (RabbitMQ Management)
   - 15692 (RabbitMQ Prometheus)
+
+- Cleaning up after shutting services down:
+
+```bash
+docker-compose down -v
+```
 
 ### RabbitMQ Management
 
