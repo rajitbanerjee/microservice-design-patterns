@@ -180,7 +180,27 @@ Sequence of steps:
 \end{itemize}
 
 The above model suggests the possibility of higher overall system performance compared to the first case study, since all inter-service communication is asynchronous and non-blocking. This is in fact a well-accepted approach when dealing with microservice-architecture - to have the external client or frontend facing service (like the broker) expose a synchronous REST API, while the internal microservices (like the cinemas with the broker) communicate asynchronously (here, via message queues).
-Requests are linked to their corresponding responses by some form of correlation ID.
+Requests are linked to their corresponding responses by some form of correlation ID. However, care must still be taken to scale the Broker service as needed to handle increasing load, since it is the single point of entry for external clients.
 
 \subsubsection{Manual API Testing}
+
+Again, using VS Code's REST Client, various HTTP requests (stored under \code{src/main/resources/http/}) to the client-facing Broker service (port 8099) are timed. Internal cinema services use RabbitMQ queues, a topic exchange and routing keys to pass messages to/from the central Broker. The following endpoints have been tested to demonstrate the functionality of the web application:
+
+\begin{itemize}
+	\item \code{/api/movie/list} (Fig. \ref{fig:cs02-manual-1}): The \code{/list} endpoint sends a request to the Broker to list the movie showtimes from all cinema services. Since the Broker communicates with the cinemas via asynchronous messaging, only an alphanumeric series of characters (separated by hyphens) is returned by the GET request (in 160 ms), which is the request's correlation ID.
+
+	\item \code{/api/movie/list/\{correlationId\}} (Fig. \ref{fig:cs02-manual-2}): On providing the same correlation ID received earlier as a path variable in a new GET request, the full list of movie showtimes from all cinemas is returned (in 78 ms). The Broker uses the time between the two requests to cache responses from any cinemas that are able to process the request in the given timeframe.
+
+	\item \code{/api/cinema/cineworld/reservation/make} (Fig. \ref{fig:cs02-manual-3}): A targeted request to the Cineworld cinema must also go via the message Broker (\code{/api} prefix), unlike the first case study where such as request is directly sent to the appropriate cinema via an API gateway. Here, the Broker creates a custom routing key to forward the request only to the appropriate cinema's request queue, instead of broadcasting it to all queues. A POST request to Cineworld contains booking details identical to those seen in the first case study, and a corrlation ID is returned in 65 ms.
+
+	\item \code{/api/cinema/cineworld/reservation/make/\{correlationId\}} (Fig. \ref{fig:cs02-manual-4}): A GET request to the \code{/reservation/make} endpoint with the appropriate correlation ID yields a response in 31 ms with the successful reservation details.
+
+	\item \code{/api/cinema/cineworld/reservation/list} (Fig. \ref{fig:cs02-manual-5}): It only takes 10 ms to fetch the correlation ID for a reservation list GET request to Cineworld.
+
+	\item \code{/api/cinema/cineworld/reservation/list/\{correlationId\}} (Fig. \ref{fig:cs02-manual-6}): In 13 ms, the server is able to list all the reservations at Cineworld, thus confirming the success of the earlier \code{/reservation/make} request.
+\end{itemize}
+
+This asynchronous request/response pattern is especially useful in preventing client blocking (as seen in the first case study), since the client is now able to perform other tasks after sending a series of requests to the Broker, without having to wait for every single request to receive a full response before moving on.
+
+
 \subsubsection{Performance Testing}

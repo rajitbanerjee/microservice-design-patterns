@@ -269,4 +269,16 @@ Sequence of steps:
 From the sequence diagram, one can infer that the API gateway (and possibly the aggregator) service can turn into potential performance bottlenecks if appropriate preventive measures are not taken under heavy load, especially since all the inter-service communication is synchronous and blocking. Similar modelling can also be done for other use cases, such as making a reservation, or listing reservations at a given cinema.
 
 \subsubsection{Manual API Testing}
+
+Using VS Code, one can measure the time taken by application to process a given HTTP request (stored under \code{src/main/resources/http/} in \code{api-gateway-service}). All calls are made to the client-facing API gateway on port 8099, which internal microservices also use to communicate with each other. The following endpoints have been tested to demonstrate the functionality of the web application:
+
+\begin{itemize}
+	\item \code{/api/movie/list} (Fig. \ref{fig:cs01-manual-1}): As specified in the API gateway routing configurations, all requests to \code{/api} are forwarded to the Aggregator service using a logical address. Actual network locations are maintained only by the Eureka service registry, where all services must register on startup. A GET request to the \code{/api/movie/list} endpoint returns the list of movie showtimes (HTTP status 200 OK) from all active cinema services in 153 milliseconds (ms).
+
+	\item \code{/cinema/cineworld/reservation/make} (Fig. \ref{fig:cs01-manual-2}): A sample ticket reservation can be made at Cineworld by directing the request only to the appropriate service, using a POST request to \code{/cinema/cineworld/reservation/make}. The body of the request includes booking details such as the client name and email, movie ID, date, showtime, number of tickets, ticket type/category and total amount paid. In a production system, these details would be provided by the frontend, after the client enters information on a website. An HTTP status 201 Created response implies that the reservation was successfully stored in the cinema database, with the server returning the new reservation in 152 ms.
+
+	\item \code{/cinema/cineworld/reservation/list} (Fig. \ref{fig:cs01-manual-3}): To ensure that the previous reservation at Cineworld was successful, one can list all the reservations at Cineworld. In a production system, such an endpoint would be privileged and restricted to admin users, so that any external client doesn't get access to other clients' booking details. A 200 OK response in 45 ms returns a list of reservations, containing a single entry for Jane Doe's booking made earlier.
+\end{itemize}
+
+
 \subsubsection{Performance Testing}
