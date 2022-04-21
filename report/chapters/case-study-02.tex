@@ -102,13 +102,17 @@ The RabbitMQ HTTP API reference, including details on health check endpoints, is
 
 \begin{itemize}
 	\item \code{/api/health/checks/alarms} (Fig. \ref{fig:cs02-hc1}): Responds a 200 OK if there are no alarms in effect in the cluster, otherwise responds with a 503 Service Unavailable.
-	\item \code{/api/health/checks/local-alarms} (Fig. \ref{fig:cs02-hc2}): Responds a 200 OK if there are no local alarms in effect on the target node, otherwise responds with a 503 Service Unavailable.
-	\item \code{/api/health/checks/certificate-expiration/within/unit} (Fig. \ref{fig:cs02-hc3}):  Checks the expiration date on the certificates for every listener configured to use TLS. Responds a 200 OK if all certificates are valid (have not expired), otherwise responds with a 503 Service Unavailable. Valid units: days, weeks, months, years. The value of the within argument is the number of units. So, when within is 2 and unit is "months", the expiration period used by the check will be the next two months.
-	\item \code{/api/health/checks/port-listener/port} (Fig. \ref{fig:cs02-hc4}): Responds a 200 OK if there is an active listener on the give port, otherwise responds with a 503 Service Unavailable.
-	\item \code{/api/health/checks/protocol-listener/protocol} (Fig. \ref{fig:cs02-hc5}): Responds a 200 OK if there is an active listener for the given protocol, otherwise responds with a 503 Service Unavailable. Valid protocol names are: amqp091, amqp10, mqtt, stomp, web-mqtt, web-stomp.
-	\item \code{/api/health/checks/virtual-hosts} (Fig. \ref{fig:cs02-hc6}): Responds a 200 OK if all virtual hosts and running on the target node, otherwise responds with a 503 Service Unavailable.
-	\item \code{/api/health/checks/node-is-mirror-sync-critical} (Fig. \ref{fig:cs02-hc7}): Checks if there are classic mirrored queues without synchronised mirrors online (queues that would potentially lose data if the target node is shut down). Responds a 200 OK if there are no such classic mirrored queues, otherwise responds with a 503 Service Unavailable.
-	\item \code{/api/health/checks/node-is-quorum-critical} (Fig. \ref{fig:cs02-hc8}): Checks if there are quorum queues with minimum online quorum (queues that would lose their quorum and availability if the target node is shut down). Responds a 200 OK if there are no such quorum queues, otherwise responds with a 503 Service Unavailable.
+	\item \code{/api/health/checks/certificate-expiration/\{within\}/\{unit\}} (Fig. \ref{fig:cs02-hc3}):  Checks the expiration date on the certificates for every listener configured to use TLS. Responds a 200 OK if all certificates are valid (have not expired), otherwise responds with a 503 Service Unavailable. Valid units: days, weeks, months, years. The value of the within argument is the number of units. So, when within is 2 and unit is "months", the expiration period used by the check will be the next two months.
+	\item \code{/api/health/checks/protocol-listener/\{protocol\}} (Fig. \ref{fig:cs02-hc5}): Responds a 200 OK if there is an active listener for the given protocol, otherwise responds with a 503 Service Unavailable. Valid protocol names are: amqp091, amqp10, mqtt, stomp, web-mqtt, web-stomp.
+\end{itemize}
+
+A few other useful endpoints are listed here, with details available in the API reference:
+\begin{itemize}
+	\item \code{/api/health/checks/local-alarms}
+	\item \code{/api/health/checks/port-listener/\{port\}}
+	\item \code{/api/health/checks/virtual-hosts}
+	\item \code{/api/health/checks/node-is-mirror-sync-critical}
+	\item \code{/api/health/checks/node-is-quorum-critical}
 \end{itemize}
 
 

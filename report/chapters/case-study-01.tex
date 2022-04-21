@@ -51,15 +51,7 @@ In order to prevent cascading network or service failures resulting in system pe
     cloud:
       gateway:
         routes:
-          - id: aggregator-service-route
-            uri: lb://AGGREGATOR-SERVICE
-            predicates:
-              - Path=/api/**
-            filters:
-              - name: CircuitBreaker
-                args:
-                  name: aggregator-service-cb
-                  fallbackUri: forward:/fallback/aggregator-service
+          ...
           - id: cinema-cineworld-service-route
             uri: lb://CINEMA-CINEWORLD-SERVICE
             predicates:
