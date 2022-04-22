@@ -1,6 +1,7 @@
 .DS_STORE
 .vscode/
 .ipynb_checkpoints/
+jmeter.log
 
 report/**/.tmp.*
 report/project-report.*
