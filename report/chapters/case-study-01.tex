@@ -262,7 +262,7 @@ From the sequence diagram, one can infer that the API gateway (and possibly the 
 
 \subsubsection{Manual API Testing}
 
-Using VS Code, one can measure the time taken by application to process a given HTTP request (stored under \code{src/main/resources/http/} in \code{api-gateway-service}). All calls are made to the client-facing API gateway on port 8099, which internal microservices also use to communicate with each other. The following endpoints have been tested to demonstrate the functionality of the web application:
+Using VS Code, the time taken by the application to process a given HTTP request (stored under \code{src/main/resources/http/} in \code{api-gateway-service}) was measured. All calls were made to the client-facing API gateway on port 8099, which internal microservices also use to communicate with each other. The following endpoints were tested to demonstrate the functionality of the web application:
 
 \begin{itemize}
   \item \code{/api/movie/list} (Fig. \ref{fig:cs01-manual-1}): As specified in the API gateway routing configurations, all requests to \code{/api} are forwarded to the Aggregator service using a logical address. Actual network locations are maintained only by the Eureka service registry, where all services must register on startup. A GET request to the \code{/api/movie/list} endpoint returns the list of movie showtimes (HTTP status 200 OK) from all active cinema services in 153 milliseconds (ms).
@@ -276,3 +276,76 @@ Using VS Code, one can measure the time taken by application to process a given 
 
 
 \subsubsection{Performance Testing}
+
+Finally, using CLI mode on Apache JMeter, the microservices can be load tested. Two test plans (A and B) have been designed: to fetch the list of movie showtimes from all cinemas, and then to make a ticket reservation at Cineworld. For both tests, the number of threads (users) is varied from 10 to 100 in intervals of 10, with a ramp-up period of 1 second, i.e. the time taken by JMeter to get all threads up and running. Importantly, all load testing is performed over 1000 iterations to improve reliability of measurements.
+
+\begin{figure}[H]
+  \centering
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs01-lta-1.png}}
+  \subfigure[]{\includegraphics[width=0.5\linewidth]{./assets/images/case-studies/cs01-lta-2.png}}
+  \caption{Load test A response times using (a) 10 threads and (b) 100 threads.}
+  \label{fig:cs01-lta-12}
+\end{figure}
+
+Load test A is focussed on the \code{/api/movie/list} endpoint, with the call to the aggregator service (via API gateway) returning the full list of movie showtimes from Cineworld, Dundrum and UCD cinemas. Fig. \ref{fig:cs01-lta-12} shows the response times measured at the two load extremities - 10 threads and 100 threads. Since response time measurements are known to be noisy, a Savitzky-Golay filter is used for data smoothing (plotted in red). The filter uses convolution, by applying the linear least squares method to fit successive subsets (chosen size = 10000) of adjacent data points with a low degree polynomial (chosen = 2). The results show that at a low workload of 10 threads, the response time is more or less constant at under 10 milliseconds (ms). There is a noticeable initial spike (70 ms +), likely due to the time taken to establish the database connection and populate the cache (cold start). The load is increased in intervals of 10 threads, up to the heavy load scenario of 100 threads. In that situation, the recorded response times jumped from 30-50 ms to about 100 ms (noticeable in the plot between timestamp 270000 and 280000). The variation in response time appears to increase significantly when using 100 threads, suggesting a need for system scaling to handle heavier workloads without performance degradation.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs01-lta-3.png}
+  \caption{Count of 200 and 500 HTTP response codes during load test A at different load levels.}
+  \label{fig:cs01-lta-3}
+\end{figure}
+
+Fig. \ref{fig:cs01-lta-3} shows the response codes observed during load test A, 200 implying success and 500 signifying a server error. The circuit breaker timeout pattern employed in this case study prevents unresponsive server behaviour at heavy workloads, with fast failures reflected by the increase in proportion of errors (16 to 20\%) at load points such as 90 or 100 threads. This is preferable to the server taking 3 plus seconds to respond to client queries. However, steps must be taken to minimise the error probability - with the recommended approach being an increase in service capacity (horizontal or vertical scaling as appropriate) to handle heavier load.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs01-lta-4.png}
+  \caption{Average response time vs number of threads in load test A.}
+  \label{fig:cs01-lta-4}
+\end{figure}
+
+One of the primary aims of load testing is to demonstrate the system resource usage being proportional to the applied load, which is a precondition for scalability. This is well illustrated by Fig. \ref{fig:cs01-lta-4}, with a strong positive Pearson correlation of 0.983 between average response time and the number of threads (load).
+
+For load test B, a similar strategy as above was applied to check the ticket reservation functionality of the application. The API endpoint \code{/cinema/cineworld/reservation/make} directly contacts the Cineworld service via the API gateway. Due to the reduced inter-service communication, the response times measured at both load extremities - 10 threads and 100 threads are more or less constant at about 3 ms and 10 ms respectively. As expected, making a reservation at a single cinema is considerably quicker than aggregating movie showtimes from all services. The listing below shows the ticket booking details used as the POST request body - identical to the payload used for manual API testing.
+
+\begin{lstlisting}[caption=Dummy payload for load test B POST request]
+  {
+    "clientName": "Jane Doe",
+    "clientEmail": "jane.doe@ucd.ie",
+    "movieId": "CNW001",
+    "date": "2022-04-15",
+    "showTime": "18:00",
+    "tickets": 2,
+    "ticketType": "Gold",
+    "amount": 30.00
+  }
+\end{lstlisting}
+
+
+\begin{figure}[H]
+  \centering
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs01-ltb-1.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs01-ltb-2.png}}
+  \caption{Load test B response times using (a) 10 threads and (b) 100 threads.}
+  \label{fig:cs01-ltb-12}
+\end{figure}
+
+Fig. \ref{fig:cs01-ltb-3} showing a 100\% success rate (all 201 Created HTTP response codes) at all load levels reaffirms the fact that relatively low response times for reservation requests allows the system to handle a load even greater than 100 threads per second before collapsing and requiring a scale-up.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs01-ltb-3.png}
+  \caption{Count of HTTP response codes during load test B at different load levels.}
+  \label{fig:cs01-ltb-3}
+\end{figure}
+
+As seen before in load test A, the linearity of resource consumption with respect to system load in test B is confirmed by a Pearson correlation score of 0.985. The straight line plot in Fig. \ref{fig:cs01-ltb-4} shows a proportional increase in mean response time with load increasing gradually from 10 to 100 threads.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs01-ltb-4.png}
+  \caption{Average response time vs number of threads in load test B.}
+  \label{fig:cs01-ltb-4}
+\end{figure}
