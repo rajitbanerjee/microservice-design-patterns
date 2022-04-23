@@ -221,17 +221,23 @@ Using JMeter again, two load tests (A and B) were designed in a similar fashion 
 \begin{figure}[H]
   \centering
   \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-lta-1.png}}
-  \subfigure[]{\includegraphics[width=0.5\linewidth]{./assets/images/case-studies/cs02-lta-2.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-lta-2.png}}
   \caption{Load test A response times using (a) 10 threads and (b) 100 threads.}
   \label{fig:cs02-lta-12}
 \end{figure}
 
+Load test A involves the Broker API endpoints \code{/api/movie/list} and \code{/api/movie/list/\{correlationId\}}. As seen in Fig. \ref{fig:cs02-lta-12}, the response time at both load levels - 10 threads and 100 threads - are far more variable, but lower on average compared to the case study 1 observations, but applying a Savitzky-Golay filter (red line) as before helps smoothen the data points for more readable plots. Both load scenarios show constant response times approximately under 10 ms and 75 ms - both lower than the case study 1 observations for identical loads. Tuning the RabbitMQ queue configurations (e.g. resource allocations) to better suit the system under test would reduce the variability in response times.
+
+Fig. \ref{fig:cs02-lta-3} shows far lower error probabilities in case study 2 load test A requests, compared to those in case study 1. The absolute total response numbers are double that of case study 1 since there are two requests involved in each step - receiving the correlation ID, then using it in a subsequent request. A naive assumption incorporated into the test plan is that the Broker is able to finish caching the response before the second request to get the full response is received - and this is shown to be true for the vast majority of cases (the few failures are depicted by the 500 server error code numbers in the table). However, a better approach would be to separate the consecutive requests with a fixed wait period, and disregard the wait time when plotting average response times and calculating other metrics. The idea behind asynchronous requests as shown here is that the client does not require an immediate response to a query, but emulating such a scenario is difficult when response timing is involved while invoking a synchronous REST API and keeping track of correct correlation IDs.
+
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs02-lta-3.png}
+  \includegraphics[width=0.5\linewidth]{./assets/images/case-studies/cs02-lta-3.png}
   \caption{Count of HTTP response codes during load test A at different load levels.}
   \label{fig:cs02-lta-3}
 \end{figure}
+
+Finally, a familiar linear plot with high Pearson correlation of 0.998 in Fig. \ref{fig:cs02-lta-4} confirms the linearity of resource utilisation with respect to load. An exponential curve instead would be indicative of a struggling system under constant load increments.
 
 \begin{figure}[H]
   \centering
@@ -240,20 +246,19 @@ Using JMeter again, two load tests (A and B) were designed in a similar fashion 
   \label{fig:cs02-lta-4}
 \end{figure}
 
+Load test B is designed to check the ticket reservation functionality, corresponding to endpoints \code{/api/cinema/cineworld/reservation/make} and \code{/api/cinema/cineworld/reservation/make/\{correlationId\}}, with an identical client booking payload (Jane Doe, Cineworld) for POST requests. The seconds request in each step is simple GET request with the extracted correlation ID as a path variable.
+
 \begin{figure}[H]
   \centering
-  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-ltb-1.png}}
+  \subfigure[]{\includegraphics[width=0.4\linewidth]{./assets/images/case-studies/cs02-ltb-1.png}}
   \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-ltb-2.png}}
   \caption{Load test B response times using (a) 10 threads and (b) 100 threads.}
   \label{fig:cs02-ltb-12}
 \end{figure}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs02-ltb-3.png}
-  \caption{Count of HTTP response codes during load test B at different load levels.}
-  \label{fig:cs02-ltb-3}
-\end{figure}
+Fig. \ref{fig:cs02-ltb-12} shows highly variable response times, but mostly constant Savitzky-Golay smooth red curves, measured at approximately 10 ms and 50 ms for load levels of 10 threads and 100 threads respectively. In this case, the average response times were higher that those in the previous case study, possibly due to the effect of two communication round trips, and request/response travel via a congested Broker service. This suggests that the Broker and RabbitMQ queues need to be configured with greater hardware resources to avoid a performance bottleneck.
+
+Since the POST and GET requests were performed without a time gap in between, there is a small percentage of errors observed here, while there were none in case study 1. As mentioned earlier, these errors are caused in cases where the Broker doesn't finish storing microservice responses for some correlation IDs, and consequently the client cannot access the endpoint by providing an ID. Scaling the services is a plausible solution, since the prerequisite is satisfied - resource utilisation levels are directly proportional to the system load (Pearson correlation of 0.992 between average response time and number of threads in the load test).
 
 \begin{figure}[H]
   \centering
