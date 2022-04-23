@@ -185,7 +185,7 @@ Sequence of steps:
 \begin{itemize}
   \item Firstly, contacting the Broker via synchronous REST only returns a correlation ID of the forwarded request, instead of a list of movies.
   \item Next, the Broker sends asynchronous messages (open arrow heads, solid lines) to each Cinema via the RabbitMQ infrastructure (topic exchange, queues, routing keys), without expecting an immediate response.
-  \item When a Cinema is done processing the request, it returns the list of movie showtimes to the Broker, along with the request ID.
+  \item When a Cinema is done processing the request, it returns the list of movie showtimes to the Broker, along with the request ID. This is known as an asynchronous callback.
   \item The Broker caches the responses from Cinemas using the same correlation ID, ready to be requested by the Client.
   \item When the Client makes another synchronous REST API call to the Broker with the appropriate ID, the Broker returns any responses that were cached in the time since the initial request.
 \end{itemize}

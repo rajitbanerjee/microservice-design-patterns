@@ -1,43 +1,31 @@
 \chapter{Conclusions}
 
-TODO: Include: key takeaways from experiments and performance analysis, future work and improvements, reflection (lessons learnt)
+In conclusion, it is appropriate to reflect on the performance impact of microservices, design patterns, as well as the interpretation of case study evaluation results.
 
 \section{Summary}
 
+With the rising popularity of microservices, the number of systems migrating from monolithic to fine-grained microservice architecture is increasing by the day. Design patterns are essential to developers working with microservices, with every effort made to avoid anti-patterns which can hinder system performance.
+
+Applying the most suitable design patterns for a given business use-case is critical to achieving a functional system, and importantly, a \textit{performant} system able to deal with changing demand. Performance engineering is a vital part of the software development lifecycle, and clear objectives must be set to achieve the best performance at a given budget.
+
+By building two web applications using a wide range of microservice design patterns, the performance benefits and shortcomings of each pattern was clearly demonstrated. While synchronous REST APIs are required for communication with some clients (e.g. frontend/UI), adopting an asynchronous strategy such as messaging for internal communication is highly recommended in order to avoid client blocking.
+
+For microservices exposing an API for clients, using an API gateway along with automatic service discovery greatly reduces the necessary effort in client-side code. When using message queues, correctly configuring the infrastructure to use adequate hardware resources is an important task. Monitoring and observability patterns are absolutely crucial to tracking system performance over time, especially with useful visualisations instead of simple log dumps. Some design patterns such as externalising configuration, having a separate database per service, or using Docker to deploy a single service instance per container, are extremely useful and applicable to the vast majority of microservice-based applications.
+
+Evaluation of case studies in this project suggest the following key takeaways:
+\begin{itemize}
+  \item Choosing an appropriate evaluation strategy is vital, and is dependent on clear, pre-defined performance goals.
+  \item Performance modelling and manual API testing are useful in early stages of development. Any performance regressions and bottlenecks can be identified by modelling, then verified by large-scale testing. In the above case studies, the API gateway and Broker services are shown to be potential performance bottlenecks (single point of entry and failure e.g. due to congestion), and are hence prime candidates for service scaling to avoid issues.
+  \item Automated performance testing, such as load testing, is essential for reliable performance analysis. Simple load testing reveals that the first case study (API gateway + REST) was observed to be approximately 25\% slower (response time) on average to fetch an aggregated list of movie showtimes from all services,  under heavy load (100 threads) compared to the second case study (asynchronous messaging). However, when contacting a single cinema service to make a reservation, the API gateway triumphs with about 5 times faster responses compared to the queueing system. There were several factors (both hardware and software configurations) affecting the observed results, and it is quite possible to further tune the services to obtain more distinctive results in each case study. Importantly, as long as common anti-patterns are avoided, no single design pattern is superior to another: the choice between similar patterns should depend on the business requirement.
+  \item Since performance measurements can vary significantly, ensuring reliability through multiple test iterations is required. Data smoothing techniques should also be applied to obtain more usable plots.
+\end{itemize}
 
 \section{Future Work}
 
+This project has a number of limitations that could be explored and overcome in future works. First and foremost, countless microservice design patterns and anti-patterns are constantly evolving, and could be demonstrated through further case studies. Moreover, showing the migration process from monoliths to microservices using refactoring patterns should be an insightful study.
 
-\section{Reflection}
+Today, the vast majority of microservices are deployed in the cloud, thanks to various benefits such as ease of scalability and auto-provisioning resources, faster release, reduced cost, ease of management, and much more. Consequently, a number of cloud-specific design patterns have emerged. With cloud deployment, the use of container orchestration tools like Kubernetes are indispensable in the industry for managing a large number of containerised services, and to enable further scaling, reliability and fault tolerance.
 
-TODO
+To evaluate microservice-based applications, only simple and limited load testing was carries out in this project, leaving more rigorous stress, spike and integration tests to future studies.
 
-In this section you will sum up your report, draw some conclusions about your work so far, and make some
-general observations about the work to come. You may also use this opportunity to express points of view,
-or make factual claims, that are more pertinent here than in other sections of the report. If your project
-raises some ethical concerns, for example about how data or users are treated, then address them here in a
-thoughtful manner.
-
-Regarding this document, here are some concluding points that you should keep in mind when writing your own.
-You may use screenshots in your report, but do not overfill your report with them, or with figures of any kind.
-Make sure that figures earn their keep, and are not just present as space fillers or as eye candy. If you use
-diagrams or figures from other people's work, including the web, be sure to cite the creator in the corresponding
-caption. All things being equal, it is better to construct your own figures than to copy and paste those of others.
-In any case, always make sure that your images are readable, do not suffer from pixelation or aliasing effects,
-and that each is clearly numbered, captioned and meaningfully referenced in the main body of the text.
-
-Ensure that there is a cohesive argument expressed in the text of the report and that it is not simply a bag of
-diagrams, screenshots and wishful thinking. Every report should tell a story, so know what story you want to tell.
-When you include images, make sure they are readable and truly add to the discussion.
-
-Make sure your language is professional throughout, and steer a course between pompous and colloquial. Maintain
-authorial distance and do not overuse “me,” “I” and “our.” Your are writing for a professional audience who will
-judge you on the quality of your prose, so use a grammar and a spelling checker.
-
-Use LaTeX if you wish - this is recommended if you plan to use mathematical formulae in your report, but in any
-case, keep the general spacing and font/style you find here (Single or 1.5 spacing, 12 pt. font for text, etc.).
-Be sure to submit a PDF (never a .DOC or .DOCX file) as your report. If you prepare your report in MS Word, as
-this document has been, save it as a PDF before you submit it. Overall it should be about 18 - 20 pages, including
-figures, front matter and references, A significant portion of the report will be textual, with approx.. five or
-six thousand words. Do not rely on images or other filler to write your report for you.
-The dates and means of submission will be communicated to you separately.
+In the end, performance must not be an afterthought in the lifecycle, since delivering well performing systems is arguably equally important as software functionality. Practices involving microservice architectures are still growing and developing constantly, and the shape they take in the future would be positively impacted by engineering and management teams taking measures to integrate performance considerations into the development process.
