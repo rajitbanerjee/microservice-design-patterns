@@ -215,3 +215,49 @@ This asynchronous request/response pattern is especially useful in preventing cl
 
 
 \subsubsection{Performance Testing}
+
+Using JMeter again, two load tests (A and B) were designed in a similar fashion to case study 1. However, due to the asynchronous nature of communication in case study 2, each test plan includes two HTTP requests: one to send the initial request to the Broker and get a correlation ID, and another to use the correlation ID to fetch the final response. A regular expression extractor (post-processor) is used in JMeter to extract the correlation ID from the response body after the first request, then use it as a path variable for the second request. Other test parameters are identical to case study 1, for instance: constant load increments from 10 to 100 threads, 1 seconds ramp-up, and 1000 test iterations at each load level for reliability.
+
+\begin{figure}[H]
+  \centering
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-lta-1.png}}
+  \subfigure[]{\includegraphics[width=0.5\linewidth]{./assets/images/case-studies/cs02-lta-2.png}}
+  \caption{Load test A response times using (a) 10 threads and (b) 100 threads.}
+  \label{fig:cs02-lta-12}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs02-lta-3.png}
+  \caption{Count of HTTP response codes during load test A at different load levels.}
+  \label{fig:cs02-lta-3}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs02-lta-4.png}
+  \caption{Average response time vs number of threads in load test A.}
+  \label{fig:cs02-lta-4}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-ltb-1.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-ltb-2.png}}
+  \caption{Load test B response times using (a) 10 threads and (b) 100 threads.}
+  \label{fig:cs02-ltb-12}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs02-ltb-3.png}
+  \caption{Count of HTTP response codes during load test B at different load levels.}
+  \label{fig:cs02-ltb-3}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs02-ltb-4.png}
+  \caption{Average response time vs number of threads in load test B.}
+  \label{fig:cs02-ltb-4}
+\end{figure}
