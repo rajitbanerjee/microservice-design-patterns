@@ -4,9 +4,9 @@ The first case study showcasing a web app built (movie ticket reservation system
 
 - Starting the services with Docker Compose:
 
-```bash
-./run-services.sh --clean
-```
+  ```bash
+  ./run-services.sh --clean
+  ```
 
 - For local testing of the backend API, run the requests in `.http` files under `./api-gateway-service/src/main/resources/http/*`.
 
@@ -17,6 +17,10 @@ The first case study showcasing a web app built (movie ticket reservation system
 
 - Cleaning up after shutting services down:
 
-```bash
-docker-compose down -v
-```
+  ```bash
+  docker-compose down -v
+  ```
+
+- Load testing:
+  - Plans and results: `./jmeter/`
+  - Analysis: `./notebooks/`

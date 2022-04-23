@@ -1,4 +1,4 @@
-<div align="center">
+<div align="left">
   <img src="./assets/ucdcs.jpg" width="250">
   <h2>Performance Analysis of Design Patterns in <br/>Microservice Architecture</h2>
   <h4>COMP30900 & COMP30910 Final Year Project 2021-22</h4>
@@ -17,10 +17,12 @@
 
 ### Getting Started
 
-In order to run the case study applications, the following are required:
+Requirements:
 
 - Docker (with Docker Compose)
 - JDK 11
+- Apache Jmeter
+- Python3 and Jupyter Notebook
 - A number of free ports on the host machine, specified in [case-study-01/README.md](./case-study-01/README.md) and [case-study-02/README.md](./case-study-02/README.md).
 
 All other requirements (such as Netflix Eureka, RabbitMQ, Prometheus, Grafana, etc.) are set up by Docker Compose.

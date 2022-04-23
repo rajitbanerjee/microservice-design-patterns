@@ -21,13 +21,17 @@ The second case study showcasing a web app (movie ticket reservation system) bui
 
 - Cleaning up after shutting services down:
 
-```bash
-docker-compose down -v
-```
+  ```bash
+  docker-compose down -v
+  ```
+
+- Load testing:
+  - Plans and results: `./jmeter/`
+  - Analysis: `./notebooks/`
 
 ### RabbitMQ Management
 
-Management UI: http://localhost:15672
+Management UI: http://localhost:15672 <br/>
 Credentials: `guest:guest`
 
 ### Prometheus
@@ -36,5 +40,5 @@ UI: http://localhost:9090
 
 ### Grafana
 
-UI: http://localhost:3000
+UI: http://localhost:3000 <br/>
 Credentials: `admin:admin` (skip password reset when prompted)
