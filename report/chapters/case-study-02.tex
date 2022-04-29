@@ -1,8 +1,8 @@
-\section{Case Study 2}
+\chapter{Case Study 2: Implementation and Evaluation}
+
+\section{Overview}
 
 The second case study implements the same system prototype for a movie ticket reservation system as seen in the pilot study. However, a different set of microservice design patterns is explored this time, including a significant change in inter-service communication style from synchronous REST request/response to asynchronous messaging.
-
-\subsection{Design and Implementation}
 
 \begin{figure}[H]
   \centering
@@ -13,8 +13,9 @@ The second case study implements the same system prototype for a movie ticket re
 
 The system architecture shown in Fig. \ref{fig:cs02-arch} is similar to the previous study's architecture in the sense that the three cinemas are still independent microservices with separate MongoDB database connections. However, the intermediary that intercepts client requests has been changed from an API gateway plus aggregator setup to a message broker that uses message queues to communicate with other services. For external clients, the broker still exposes a modified REST API, but with separate endpoints to send a request and fetch a response. Requests are hence asynchronous from the client's perspective too since a single endpoint is no longer expected to deliver results while maintaining an open connection. The design patterns implemented by this web application are described in detail below:
 
+\section{Design Patterns}
 
-\subsubsection{Asynchronous Messaging}
+\subsection{Asynchronous Messaging}
 
 For inter-service communication, the \textit{asynchronous messaging} is the recommended design pattern over synchronous request/response. Although external clients should still avail of a synchronous REST API to contact the intermediary (broker), the internal cinema services should communicate with the broker asynchronously to prevent blocking. There exist multiple realisations of this pattern, including the use of notifications, HTTP polling, publish/subscribe, or messaging queues request/response.
 
@@ -33,7 +34,7 @@ Fig. \ref{fig:rmq-management} shows the 4 queues set up for requests and respons
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1.0\linewidth]{./assets/images/case-studies/rmq-management.png}
+  \includegraphics[width=1.0\linewidth]{./assets/images/case-study-02/rmq-management.png}
   \caption{The Queues section from the RabbitMQ Management UI (\url{http://localhost:15672}). Default login credentials: \code{guest:guest}.}
   \label{fig:rmq-management}
 \end{figure}
@@ -42,7 +43,7 @@ In each microservice, a \code{config.MessagingConfig} \code{@Configuration} clas
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\linewidth]{./assets/images/case-studies/async-req-res.png}
+  \includegraphics[width=0.8\linewidth]{./assets/images/case-study-02/async-req-res.png}
   \caption{Sample asynchronous request/response pattern.}
   \captionsource{Microsoft, \url{https://github.com/mspnp/cloud-design-patterns}}
   \label{fig:async-req-res}
@@ -75,7 +76,7 @@ The code listing below shows a snippet from the broker service, with an HTTP GET
 As mentioned earlier, any asynchronous responses from cinemas are first cached in the broker using the correlation ID, then the API allows reading from the cache with the correct ID via a separate endpoint. In terms of system performance compared to case study 1, there is no longer a need for the client to be blocked after sending a request (in anticipation of an immediate response). Requests can be sent to the broker, and then fetched later when needed using the correlation ID. As a result, the client can continue with other tasks after sending a series of requests to be processed, and then collect the responses when they need to be displayed by some frontend service.
 
 
-\subsubsection{Application Metrics}
+\subsection{Application Metrics}
 
 For successful performance engineering in a distributed system, observability and monitoring patterns are indispensable. Monitoring is often defined as capturing the behaviour of a system by performing health checks and collecting metrics over time, to aid the process of anomaly detection and root cause analysis. While maintaining text logs is also important, aggregated metrics over time provide insights into the historical and current state of a system. To understand the behaviour of an application and be able to troubleshoot performance issues or service degradations, adequate monitoring infrastructure must be in place, along with visualisation tools.
 
@@ -86,7 +87,7 @@ The \code{rabbitmq\_prometheus} plugin exposes all RabbitMQ metrics on port 1569
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\linewidth]{./assets/images/case-studies/prom-targets.png}
+  \includegraphics[width=0.75\linewidth]{./assets/images/case-study-02/prom-targets.png}
   \caption{Prometheus targets dashboard on \url{http://localhost:9090}.}
   \label{fig:prom-targets}
 \end{figure}
@@ -95,13 +96,13 @@ Due to the limited features of the RabbitMQ management plugin and the Prometheus
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1.0\linewidth]{./assets/images/case-studies/grafana-overview.png}
+  \includegraphics[width=1.0\linewidth]{./assets/images/case-study-02/grafana-overview.png}
   \caption{Grafana RabbitMQ overview dashboard on \url{http://localhost:3000} during a load test.}
   \label{fig:grafana-overview}
 \end{figure}
 
 
-\subsubsection{Health Check API}
+\subsection{Health Check API}
 
 As discussed earlier, monitoring is crucial for any application, the basic aspect of which happens to be \textit{health checking}. This is especially true for modern-day microservices, which are usually hosted on the cloud: affected by several factors such as network latency, bandwidth, and performance of "black-box" host machines. Hence, the health of services should be verified regularly as a part of the monitoring infrastructure, to maintain SLAs (service level agreements) and promised availability levels.
 
@@ -125,7 +126,7 @@ A few other useful endpoints are listed here, with details available in the API 
 
 The next three design patterns are invaluable to a microservice-based application like the ones implemented in case studies 1 and 2, and are hence common to both:
 
-\subsubsection{Externalised Configuration}
+\subsection{Externalised Configuration}
 
 Docker Compose environment variables are used to configure all the microservices in this application. The environment variables set by Docker are translated into Spring Boot application properties, e.g. \code{SERVER\_PORT} becomes \code{server.port}, \code{SPRING\_RABBITMQ\_HOST} becomes \code{spring.rabbitmq.host}, and so on, without even having to specify the properties in the standard \code{application.yml}.
 
@@ -147,7 +148,7 @@ Docker Compose environment variables are used to configure all the microservices
 
 The listing above shows how the data file used to populate MongoDB, and other RabbitMQ configurations such as the name of exchange and routing keys are set in the application properties. When access is required in the source code, Spring uses the \code{@Value} annotation to read said properties. As mentioned in case study 1, externalising configuration in this manner helps with organisation and reduces avoidable development (human) errors.
 
-\subsubsection{Database per Service}
+\subsection{Database per Service}
 
 Maintaining a separate MongoDB database for each cinema microservice is still the most practical approach in a distributed system to avoid a data operation bottleneck. A server is set up with Docker, and multiple databases are created again with the help of Spring Boot environment variables such as \code{SPRING\_DATA\_MONGODB\_DATABASE} and \code{SPRING\_DATA\_MONGODB\_PORT}.
 
@@ -162,15 +163,15 @@ Maintaining a separate MongoDB database for each cinema microservice is still th
     ...
 \end{lstlisting}
 
-\subsubsection{Service Instance per Container}
+\subsection{Service Instance per Container}
 
 The ease of spinning up Docker containers makes this deployment pattern the industry standard for microservices. This is especially true for this second case study, where much additional infrastructure is required, such as RabbitMQ messaging system, Prometheus and Grafana servers for monitoring, which are all deployed as independent Dockerised services. Exposing ports such as 9090 (Prometheus), 3000 (Grafana), 15672 (RabbitMQ management) provides access to various user interfaces to host machine browsers. Using Docker Swarm or Kubernetes with Docker allows container scaling and orchestration, which are important when the load creates a need for multiple containers across multiple host machines.
 
-\subsection{Evaluation}
+\section{Evaluation and Results}
 
 Similar to the previous case study, the same approach of modelling, manual API testing and JMeter load testing is adopted here.
 
-\subsubsection{Performance Modelling}
+\subsection{Performance Modelling}
 
 The significant change in communication mechanism from synchronous REST alone (case study 1), to asynchronous request/response (external) and messaging (internal) is expected to yield performance benefits. Fig. \ref{fig:cs02-sequence} shows quite a different sequence diagram for the identical movie listing use case explored in case study 1's evaluation.
 
@@ -194,7 +195,7 @@ The above model suggests the possibility of higher overall system performance co
 
 Requests are linked to their corresponding responses by some form of correlation ID. However, care must still be taken to scale the Broker service as needed to handle increasing load, since it is the single point of entry for external clients.
 
-\subsubsection{Manual API Testing}
+\subsection{Manual API Testing}
 
 Again, using VS Code's REST Client, various HTTP requests (stored under \code{src/main/resources/http/}) to the client-facing Broker service (port 8099) were timed. Internal cinema services use RabbitMQ queues, a topic exchange and routing keys to pass messages to/from the central Broker. The following endpoints were tested to demonstrate the functionality of the web application:
 
@@ -215,14 +216,14 @@ Again, using VS Code's REST Client, various HTTP requests (stored under \code{sr
 This asynchronous request/response pattern is especially useful in preventing client blocking (as seen in the first case study), since the client can now perform other tasks after sending a series of requests to the Broker, without having to wait for every single request to receive a full response before moving on.
 
 
-\subsubsection{Performance Testing}
+\subsection{Performance Testing with JMeter}
 
 Using JMeter again, two load tests (A and B) were designed in a similar fashion to case study 1. However, due to the asynchronous nature of communication in case study 2, each test plan includes two HTTP requests: one to send the initial request to the Broker and get a correlation ID, and another to use the correlation ID to fetch the final response. A regular expression extractor (post-processor) was used in JMeter to extract the correlation ID from the response body after the first request, then use it as a path variable for the second request. Other test parameters are identical to case study 1, for instance: constant load increments from 10 to 100 threads, 1-second ramp-up, and 1000 test iterations at each load level for reliability.
 
 \begin{figure}[H]
   \centering
-  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-lta-1.png}}
-  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-lta-2.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-study-02/cs02-lta-1.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-study-02/cs02-lta-2.png}}
   \caption{Load test A response times using (a) 10 threads and (b) 100 threads.}
   \label{fig:cs02-lta-12}
 \end{figure}
@@ -233,7 +234,7 @@ Fig. \ref{fig:cs02-lta-3} shows far lower error probabilities in case study 2's 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\linewidth]{./assets/images/case-studies/cs02-lta-3.png}
+  \includegraphics[width=0.5\linewidth]{./assets/images/case-study-02/cs02-lta-3.png}
   \caption{Count of HTTP response codes during load test A at different load levels.}
   \label{fig:cs02-lta-3}
 \end{figure}
@@ -242,7 +243,7 @@ Finally, a familiar linear plot with high Pearson correlation of 0.998 in Fig. \
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs02-lta-4.png}
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-study-02/cs02-lta-4.png}
   \caption{Average response time vs number of threads in load test A.}
   \label{fig:cs02-lta-4}
 \end{figure}
@@ -251,8 +252,8 @@ Load test B is designed to check the ticket reservation functionality, correspon
 
 \begin{figure}[H]
   \centering
-  \subfigure[]{\includegraphics[width=0.4\linewidth]{./assets/images/case-studies/cs02-ltb-1.png}}
-  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs02-ltb-2.png}}
+  \subfigure[]{\includegraphics[width=0.4\linewidth]{./assets/images/case-study-02/cs02-ltb-1.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-study-02/cs02-ltb-2.png}}
   \caption{Load test B response times using (a) 10 threads and (b) 100 threads.}
   \label{fig:cs02-ltb-12}
 \end{figure}
@@ -263,7 +264,7 @@ Since the POST and GET requests were performed without a time gap in between, th
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs02-ltb-4.png}
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-study-02/cs02-ltb-4.png}
   \caption{Average response time vs number of threads in load test B.}
   \label{fig:cs02-ltb-4}
 \end{figure}

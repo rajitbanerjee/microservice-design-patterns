@@ -1,8 +1,8 @@
-\section{Case Study 1}
+\chapter{Case Study 1: Implementation and Evaluation}
+
+\section{Overview}
 
 The pilot case study implements the movie ticket reservation system prototype described in the previous chapter, primarily using microservices communicating with REST APIs. Representational State Transfer implies that a client requesting a resource from any service cues the server to transfer back the current state of the resource in a standardised representation. The methodology and implementation details are elaborated on below.
-
-\subsection{Design and Implementation}
 
 \begin{figure}[H]
   \centering
@@ -13,7 +13,9 @@ The pilot case study implements the movie ticket reservation system prototype de
 
 The architecture diagram in Fig. \ref{fig:cs01-arch} depicts the organisation of the microservices involved: an API gateway service to act as an interface between clients and other services, an aggregator service to gather results, a central service registry, and three independent cinema services - Cineworld, Dundrum and UCD. The following microservice design patterns were employed while developing this web application:
 
-\subsubsection{API Gateway}
+\section{Design Patterns}
+
+\subsection{API Gateway}
 
 An \textit{API gateway} is one of the most fundamental and commonly used design patterns in microservice architecture. The \code{api-gateway-service} microservice offers an entry point for all clients so that multiple services (e.g. cinemas) can be exposed, and the gateway can route requests to other services as appropriate. In such situations, an API gateway relieves the clients from setting up and managing a separate endpoint for every service. It also aids the inter-service communication between microservices when required, for instance, the \code{aggregator-service} contacts the cinema services via the gateway again.
 
@@ -38,7 +40,7 @@ In this case study, the \code{api-gateway-service} uses the Spring Cloud \footno
 
 Spring Cloud Gateway paves the way for discussion on the next two design patterns: \textit{circuit breaker} and \textit{service discovery}, thanks to the Spring integrations available to simplify configuration and maintenance.
 
-\subsubsection{Circuit Breaker}
+\subsection{Circuit Breaker}
 
 To prevent cascading network or service failures resulting in system performance disasters, the \textit{circuit breaker} pattern is best applied in the API gateway service to adopt a "fail-fast" approach. This was primarily achieved by adding a \code{CircuitBreaker} filter to the Spring Cloud API gateway routing logic, a snippet of which is shown below.
 
@@ -83,13 +85,13 @@ In the API gateway application, Resilience4J was configured with default setting
 
 The fallback controller is shown above, and this application simply logs the name of the service where the circuit was broken.
 
-\subsubsection{Service Discovery}
+\subsection{Service Discovery}
 
 \textit{Service discovery} is an essential design pattern for modern microservices, where the network location (host name/IP address and port number) may be dynamic due to the industry dominance of virtualisation and containerisation solutions to run microservice-based applications. Hard-coding the locations of services is then considered an anti-pattern, since it necessitates changes in multiple places when services are scaled up or down. Hence, a natural solution is to set up a service registry, which maintains the locations of all active services and provides access to registered services through logical addresses (such as \code{lb://AGGREGATOR-SERVICE} or \code{lb://CINEMA-CINEWORLD-SERVICE} instead of actual network locations).
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\linewidth]{./assets/images/case-studies/server-side-discovery.png}
+  \includegraphics[width=0.7\linewidth]{./assets/images/case-study-01/server-side-discovery.png}
   \caption{A simple service registry setup \cite{peyrott15}.}
   \label{fig:server-side-discovery}
 \end{figure}
@@ -120,12 +122,12 @@ Netflix Eureka also makes a dashboard available (Fig. \ref{fig:eureka-dashboard}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1.0\linewidth]{./assets/images/case-studies/eureka-dashboard.png}
+  \includegraphics[width=1.0\linewidth]{./assets/images/case-study-01/eureka-dashboard.png}
   \caption{Eureka dashboard.}
   \label{fig:eureka-dashboard}
 \end{figure}
 
-\subsubsection{Aggregator}
+\subsection{Aggregator}
 
 The service \textit{aggregator} design pattern for microservices is useful when similar calls need to be made to multiple microservices. On receiving a request from the client via an API gateway, the aggregator service dispatches the request to appropriate internal backend microservices and then combines the responses into a single structure, which is returned to the requester. The aggregator itself doesn't need to know the routing details of internal services, since it can communicate with them through the API gateway again. The performance benefit of this pattern is the reduction in communication overhead and chattiness between the client and the various internal cinema microservices.
 
@@ -144,7 +146,7 @@ Moreover, in this case study, the aggregator service relies on the service disco
 
 In the given movie ticket reservation system, the function of the aggregator is to gather the list of movie showtimes from every registered cinema and return a compiled list to the client. It should also be noted that an alternative to an aggregator microservice is to perform response aggregation in an API gateway itself, which results in the \textit{gateway aggregation} pattern.
 
-\subsubsection{Externalised Configuration}
+\subsection{Externalised Configuration}
 
 Externalised configuration is a cross-cutting concern design pattern, that is especially useful in separating changeable application properties from the business logic. Spring Boot has built-in support for processing external configuration from various sources, such as Java properties files, YAML files, environment variables, and command-line arguments. The values set by the developer for such properties are injected into Spring beans \footnote{\url{https://www.baeldung.com/spring-bean}} using the \code{@Value} annotation (among other alternatives).
 
@@ -182,7 +184,7 @@ Using the above environment variables, Spring Boot then sets the application pro
         defaultZone: http://$\dollar${EUREKA_SERVER:eureka-server}:$\dollar${EUREKA_PORT:8761}/eureka/
 \end{lstlisting}
 
-\subsubsection{Database per Service}
+\subsection{Database per Service}
 
 In monolithic applications, databases are shared across services, typically in a tiered approach (involving a web tier, services tier, cache tier and data tier). However, this leads to a large central database that becomes a single performance bottleneck for all data operations and is considered an anti-pattern when used with microservice architecture. For the microservices in our system to be truly independent, their persistent data stores must also be loosely coupled. Each service must have ownership over its domain data and logic under an autonomous lifecycle. This is achieved using the \textit{database per service} design pattern.
 
@@ -208,7 +210,7 @@ Although only a single server was used in this project (serving at the default p
 
 Although all services use MongoDB in this project for simplicity, the database per service design pattern allows every service to use a different kind of data store if the need arises, for instance, a service storing a lot of relational data could use MySQL, whereas another service storing network data might use a suitable graph database.
 
-\subsubsection{Service Instance per Container}
+\subsection{Service Instance per Container}
 
 As discussed in the project outline, Docker was used to containerise and deploy the microservices. The services were built as a multi-module Maven project, each having an independent Dockerfile for deployment. Docker Compose \footnote{\url{https://docs.docker.com/compose/}} simplifies the process of defining and running multi-container Docker applications: running \code{docker-compose up} starts and runs the services defined in the Compose file, provided that each service has a valid Dockerfile.
 
@@ -231,11 +233,11 @@ The three cinema microservices have identical Dockerfiles, as shown below. Each 
 \end{lstlisting}
 
 
-\subsection{Evaluation}
+\section{Evaluation and Results}
 
 To evaluate the first case study, the aforementioned plan involving performance modelling, manual API testing and JMeter load testing is followed.
 
-\subsubsection{Performance Modelling}
+\subsection{Performance Modelling}
 
 Fig. \ref{fig:cs01-sequence} shows a sequence diagram for a scenario where the client wishes to fetch the list of movie showtimes from all active cinema microservices and view the aggregated results. The diagram components follow the specifications from OMG (2011) \cite{omg11}, showing a series of \textit{objects} (e.g. Client, Aggregator, Cinemas) with vertical \textit{lifelines} (downward flow of time). Opaque rectangles on top of lifelines are \textit{activation boxes} (i.e. method-invocation boxes) which indicate an object handling/processing a message.
 
@@ -257,7 +259,7 @@ Sequence of steps:
 
 From the sequence diagram, one can infer that the API gateway (and possibly the aggregator) service can turn into a potential performance bottleneck if appropriate preventive measures are not taken under heavy load, especially since all the inter-service communication is synchronous and blocking. Similar modelling can also be done for other use cases, such as making a reservation or listing reservations at a given cinema.
 
-\subsubsection{Manual API Testing}
+\subsection{Manual API Testing}
 
 Using VS Code, the time taken by the application to process a given HTTP request (stored under \code{src/main/resources/http/} in \code{api-gateway-service}) was measured. All calls were made to the client-facing API gateway on port 8099, which internal microservices also use to communicate with each other. The following endpoints were tested to demonstrate the functionality of the web application:
 
@@ -272,14 +274,14 @@ Using VS Code, the time taken by the application to process a given HTTP request
 \end{itemize}
 
 
-\subsubsection{Performance Testing}
+\subsection{Performance Testing with JMeter}
 
 Finally, using CLI mode on Apache JMeter, the microservices were load tested. Two test plans (A and B) were designed: to fetch the list of movie showtimes from all cinemas and then to make a ticket reservation at Cineworld. For both tests, the number of threads (users) was varied from 10 to 100 in intervals of 10, with a ramp-up period of 1 second, i.e. the time taken by JMeter to get all threads up and running. Importantly, all load testing was performed over 1000 iterations to improve the reliability of measurements.
 
 \begin{figure}[H]
   \centering
-  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs01-lta-1.png}}
-  \subfigure[]{\includegraphics[width=0.5\linewidth]{./assets/images/case-studies/cs01-lta-2.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-study-01/cs01-lta-1.png}}
+  \subfigure[]{\includegraphics[width=0.5\linewidth]{./assets/images/case-study-01/cs01-lta-2.png}}
   \caption{Load test A response times using (a) 10 threads and (b) 100 threads.}
   \label{fig:cs01-lta-12}
 \end{figure}
@@ -288,7 +290,7 @@ Load test A is focussed on the \code{/api/movie/list} endpoint, with the call to
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs01-lta-3.png}
+  \includegraphics[width=0.6\linewidth]{./assets/images/case-study-01/cs01-lta-3.png}
   \caption{Count of 200 and 500 HTTP response codes during load test A at different load levels.}
   \label{fig:cs01-lta-3}
 \end{figure}
@@ -297,7 +299,7 @@ Fig. \ref{fig:cs01-lta-3} shows the response codes observed during load test A, 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs01-lta-4.png}
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-study-01/cs01-lta-4.png}
   \caption{Average response time vs number of threads in load test A.}
   \label{fig:cs01-lta-4}
 \end{figure}
@@ -322,8 +324,8 @@ For load test B, a similar strategy as above was applied to check the ticket res
 
 \begin{figure}[H]
   \centering
-  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs01-ltb-1.png}}
-  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-studies/cs01-ltb-2.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-study-01/cs01-ltb-1.png}}
+  \subfigure[]{\includegraphics[width=0.45\linewidth]{./assets/images/case-study-01/cs01-ltb-2.png}}
   \caption{Load test B response times using (a) 10 threads and (b) 100 threads.}
   \label{fig:cs01-ltb-12}
 \end{figure}
@@ -333,7 +335,7 @@ Fig. \ref{fig:cs01-ltb-3} showing a 100\% success rate (all 201 Created HTTP res
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{./assets/images/case-studies/cs01-ltb-3.png}
+  \includegraphics[width=0.6\linewidth]{./assets/images/case-study-01/cs01-ltb-3.png}
   \caption{Count of HTTP response codes during load test B at different load levels.}
   \label{fig:cs01-ltb-3}
 \end{figure}
@@ -342,7 +344,7 @@ As seen before in load test A, the linearity of resource consumption with respec
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.55\linewidth]{./assets/images/case-studies/cs01-ltb-4.png}
+  \includegraphics[width=0.55\linewidth]{./assets/images/case-study-01/cs01-ltb-4.png}
   \caption{Average response time vs number of threads in load test B.}
   \label{fig:cs01-ltb-4}
 \end{figure}
