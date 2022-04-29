@@ -1,3 +1,14 @@
 \chapter*{Abstract}
 
-Performance engineering is an integral part of the software design lifecycle for microservice-based systems, especially with the growing importance of microservices in modern-day system design. When developing new microservices or refactoring monolithic applications into several services, design patterns and anti-patterns play an important role in providing guidance regarding documented good and bad practices in a given context. Performance analysis of such patterns is essential as they can greatly impact user experience and overall system performance. In this project, case studies are conducted to implement and evaluate a number of common design patterns in microservice-based web applications. Performance modelling, API functional testing, and systematic performance testing to measure response times are used in the evaluation process for case studies.
+Performance engineering is an integral part of the software design lifecycle for microservice-based systems, especially with the growing importance of microservices in modern-day system design. When developing new microservices or refactoring monolithic applications into several services, design patterns and anti-patterns play an important role in providing guidance regarding documented good and bad practices in a given context. Performance analysis of such patterns is essential as they can greatly impact user experience and overall system performance.
+
+In this project, case studies are conducted to implement and evaluate a number of common design patterns in microservice-based web applications. Two web applications developed for the case studies demonstrate contrasting inter-service communication styles - synchronous HTTP request/response versus asynchronous message queues - combined with secondary patterns. Performance modelling, API functional testing, and systematic performance testing to measure response times are used in the evaluation process. The key takeaways from this project's outcomes include:
+
+\begin{itemize}
+	\item Design patterns have a massive impact on the performance of microservices. Systems should be designed to handle failures as far as possible.
+	\item Possible performance issues and bottlenecks can be identified and rectified with rigorous modelling and testing. Observability and monitoring patterns are crucial to the process of detecting and troubleshooting regressions.
+	\item Automated load testing is essential in the performance evaluation process, especially for distributed systems. Performance test results should be averaged over multiple iterations, since measurements can be unreliable.
+	\item Asynchronous styles are preferred over blocking synchronous calls, especially for communication amongst internal microservices.
+	\item Systems which show resource consumption linearity with respect to load are suitable for scaling. Stable systems should show response times increasing proportionally with the incident load.
+\end{itemize}
+

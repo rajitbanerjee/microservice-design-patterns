@@ -6,7 +6,7 @@ The pilot case study implements the movie ticket reservation system prototype de
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{./assets/diagrams/cs01-arch.png}
+  \includegraphics[width=0.75\linewidth]{./assets/diagrams/cs01-arch.png}
   \caption{System design for the first case study.}
   \label{fig:cs01-arch}
 \end{figure}
@@ -304,7 +304,7 @@ Fig. \ref{fig:cs01-lta-3} shows the response codes observed during load test A, 
   \label{fig:cs01-lta-4}
 \end{figure}
 
-One of the primary aims of load testing is to demonstrate the system resource usage being proportional to the applied load, which is a precondition for scalability. This is well illustrated by Fig. \ref{fig:cs01-lta-4} (also showing a dashed trend-line), with a strong positive Pearson correlation of 0.983 between average response time and the number of threads (load).
+One of the primary aims of load testing is to demonstrate the system resource usage being proportional to the applied load, which is a precondition for scalability. This is well illustrated by Fig. \ref{fig:cs01-lta-4} (also showing a dashed trend-line), with a strong positive Pearson correlation of \textbf{0.983} between average response time and the number of threads (load).
 
 For load test B, a similar strategy as above was applied to check the ticket reservation functionality of the application. The API endpoint \code{/cinema/cineworld/reservation/make} directly contacts the Cineworld service via the API gateway. Due to the reduced inter-service communication, the response times measured at both load extremities - 10 threads and 100 threads were more or less constant at about 3 ms and 10 ms respectively. As expected, making a reservation at a single cinema was considerably quicker than aggregating movie showtimes from all services. The listing below shows the ticket booking details used as the POST request body - identical to the payload used for manual API testing.
 
@@ -340,7 +340,7 @@ Fig. \ref{fig:cs01-ltb-3} showing a 100\% success rate (all 201 Created HTTP res
   \label{fig:cs01-ltb-3}
 \end{figure}
 
-As seen before in load test A, the linearity of resource consumption with respect to system load in test B is confirmed by a Pearson correlation score of 0.985. The straight-line plot in Fig. \ref{fig:cs01-ltb-4} shows a proportional increase in mean response time with the load increasing gradually from 10 to 100 threads.
+As seen before in load test A, the linearity of resource consumption with respect to system load in test B is confirmed by a Pearson correlation score of \textbf{0.985}. The straight-line plot in Fig. \ref{fig:cs01-ltb-4} shows a proportional increase in mean response time with the load increasing gradually from 10 to 100 threads.
 
 \begin{figure}[H]
   \centering

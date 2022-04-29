@@ -6,7 +6,7 @@ The second case study implements the same system prototype for a movie ticket re
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{./assets/diagrams/cs02-arch.png}
+  \includegraphics[width=0.75\linewidth]{./assets/diagrams/cs02-arch.png}
   \caption{System design for the second case study.}
   \label{fig:cs02-arch}
 \end{figure}
@@ -230,7 +230,7 @@ Using JMeter again, two load tests (A and B) were designed in a similar fashion 
 
 Load test A involves the Broker API endpoints \code{/api/movie/list} and \code{/api/movie/list/\{correlationId\}}. As seen in Fig. \ref{fig:cs02-lta-12}, the response time at both load levels - 10 threads and 100 threads - were far more variable, but lower on average compared to the case study 1 observations. However, applying a Savitzky-Golay filter (red line) as before helps smoothen the data points for more readable plots. Both load scenarios showed constant response times approximately under 10 ms and 75 ms - both lower than the case study 1 observations for identical loads. Tuning the RabbitMQ queue configurations (e.g. resource allocations) to better suit the system under test would reduce the variability in response times.
 
-Fig. \ref{fig:cs02-lta-3} shows far lower error probabilities in case study 2's load test A requests, compared to those in case study 1. A naive assumption incorporated into the test plan is that the Broker is able to finish caching the response before the second request to get the full response is received - and this is shown to be true for the vast majority of cases (the few failures - under 3\% - are depicted by the 500 server error codes in the table). However, a better approach would be to separate the consecutive requests with a fixed waiting period, and disregard the wait time when plotting average response times and calculating other metrics. The idea behind asynchronous requests as shown here is that the client does not require an immediate response to a query, but emulating such a scenario is difficult when response timing is involved while keeping track of correct correlation IDs.
+Fig. \ref{fig:cs02-lta-3} proves that error probabilities for load test A in case study 2 (less than 3\%) are negligible compared to those observed in case study 1 (Fig. \ref{fig:cs01-lta-3}: 15-21\% under heavy load). A naive assumption incorporated into the test plan is that the Broker is able to finish caching the response before the second request to get the full response is received - and this is shown to be true for the vast majority of cases (the few failures - under 3\% - are depicted by the 500 server error codes in the table). However, a better approach would be to separate the consecutive requests with a fixed waiting period, and disregard the wait time when plotting average response times and calculating other metrics. The idea behind asynchronous requests as shown here is that the client does not require an immediate response to a query, but emulating such a scenario is difficult when response timing is involved while keeping track of correct correlation IDs.
 
 \begin{figure}[H]
   \centering
@@ -239,7 +239,7 @@ Fig. \ref{fig:cs02-lta-3} shows far lower error probabilities in case study 2's 
   \label{fig:cs02-lta-3}
 \end{figure}
 
-Finally, a familiar linear plot with high Pearson correlation of 0.998 in Fig. \ref{fig:cs02-lta-4} confirms the linearity of resource utilisation with respect to load. An exponential curve instead would be indicative of a struggling system under constant load increments.
+Finally, a familiar linear plot with high Pearson correlation of \textbf{0.998} in Fig. \ref{fig:cs02-lta-4} confirms the linearity of resource utilisation with respect to load. An exponential curve instead would be indicative of a struggling system under constant load increments.
 
 \begin{figure}[H]
   \centering
@@ -267,7 +267,7 @@ Fig. \ref{fig:cs02-ltb-12} shows highly variable response times, but mostly cons
   \label{fig:cs02-ltb-3}
 \end{figure}
 
-Since the POST and GET requests were performed without a time gap in between, there is a small percentage of errors observed here (Fig. \ref{fig:cs02-ltb-3}), while there were none in case study 1. As mentioned earlier, these errors are observed in cases where the Broker doesn't finish storing microservice responses for some correlation IDs, consequently the client cannot access the endpoint by providing an ID. Scaling the services is a plausible solution since the prerequisite is satisfied - resource utilisation levels are directly proportional to the system load (Pearson correlation of 0.992 between average response time and the number of threads in the load test).
+Since the POST and GET requests were performed without a time gap in between, there is a small percentage of errors observed here (Fig. \ref{fig:cs02-ltb-3}), while there were none in case study 1 (Fig. \ref{fig:cs01-ltb-3}). As mentioned earlier, these errors are observed in cases where the Broker doesn't finish storing microservice responses for some correlation IDs, consequently the client cannot access the endpoint by providing an ID. Scaling the services is a plausible solution since the prerequisite is satisfied - resource utilisation levels are directly proportional to the system load (Pearson correlation of \textbf{0.992} between average response time and the number of threads in the load test).
 
 \begin{figure}[H]
   \centering
